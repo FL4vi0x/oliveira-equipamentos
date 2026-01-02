@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../@generated/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://oliveira:oliveira123@localhost:5432/oliveira_erp?schema=public"
+}
+
+//
+// ==================== CATEGORIAS ====================
+//
+model Categoria {
+  id       String    @id @default(uuid())
+  nome     String    @unique
+  produtos Produto[]
+
+  @@map("categorias")
+}
+
+//
+// ==================== PRODUTOS ====================
+//
+model Produto {
+  id            String  @id @default(uuid())
+  codigoInterno String  @unique @map("codigo_interno")
+  codigoBarras  String? @unique @map("codigo_barras")
+  nome          String
+  descricao     String?
+
+  categoriaId String    @map("categoria_id")
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+
+  unidadeMedida String  @map("unidade_medida") // UN, KG, CX, etc
+  precoCompra   Decimal @map("preco_compra") @db.Decimal(10, 2)
+  precoVenda    Decimal @map("preco_venda") @db.Decimal(10, 2)
+  margemLucro   Decimal @map("margem_lucro") @db.Decimal(5, 2)
+
+  estoqueAtual  Decimal  @default(0) @map("estoque_atual") @db.Decimal(10, 3)
+  estoqueMinimo Decimal  @default(0) @map("estoque_minimo") @db.Decimal(10, 3)
+  estoqueMaximo Decimal? @map("estoque_maximo") @db.Decimal(10, 3)
+
+  ativo       Boolean @default(true)
+  ncm         String?
+  cest        String?
+  observacoes String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  movimentacoes MovimentacaoEstoque[]
+  itensVenda    ItemVenda[]
+
+  @@map("produtos")
+}
+
+//
+// ==================== ESTOQUE ====================
+//
+model MovimentacaoEstoque {
+  id         String           @id @default(uuid())
+  produtoId  String           @map("produto_id")
+  tipo       TipoMovimentacao
+  quantidade Decimal          @db.Decimal(10, 3)
+  motivo     String?
+  usuarioId  String?          @map("usuario_id")
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+
+  @@map("movimentacoes_estoque")
+}
+
+enum TipoMovimentacao {
+  ENTRADA
+  SAIDA
+  AJUSTE
+  VENDA
+  DEVOLUCAO
+}
+
+//
+// ==================== CLIENTES ====================
+//
+model Cliente {
+  id          String      @id @default(uuid())
+  tipo        TipoCliente
+  nome        String
+  cpfCnpj     String      @unique @map("cpf_cnpj")
+  email       String?
+  telefone    String?
+  celular     String?
+  endereco    String?
+  numero      String?
+  complemento String?
+  bairro      String?
+  cidade      String?
+  estado      String?     @db.Char(2)
+  cep         String?
+  observacoes String?
+  ativo       Boolean     @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  vendas Venda[]
+
+  @@map("clientes")
+}
+
+enum TipoCliente {
+  FISICA
+  JURIDICA
+}
+
+//
+// ==================== VENDAS ====================
+//
+model Venda {
+  id        String   @id @default(uuid())
+  numero    Int      @unique @default(autoincrement())
+  clienteId String?  @map("cliente_id")
+  usuarioId String   @map("usuario_id")
+  dataVenda DateTime @default(now()) @map("data_venda")
+
+  subtotal Decimal @db.Decimal(10, 2)
+  desconto Decimal @default(0) @db.Decimal(10, 2)
+  total    Decimal @db.Decimal(10, 2)
+
+  formaPagamento FormaPagamento @map("forma_pagamento")
+  status         StatusVenda    @default(CONCLUIDA)
+  observacoes    String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  cliente Cliente?    @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  itens   ItemVenda[]
+
+  @@map("vendas")
+}
+
+model ItemVenda {
+  id        String @id @default(uuid())
+  vendaId   String @map("venda_id")
+  produtoId String @map("produto_id")
+
+  quantidade    Decimal @db.Decimal(10, 3)
+  precoUnitario Decimal @map("preco_unitario") @db.Decimal(10, 2)
+  subtotal      Decimal @db.Decimal(10, 2)
+  desconto      Decimal @default(0) @db.Decimal(10, 2)
+  total         Decimal @db.Decimal(10, 2)
+
+  venda   Venda   @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+
+  @@map("itens_venda")
+}
+
+enum FormaPagamento {
+  DINHEIRO
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  PIX
+  BOLETO
+  TRANSFERENCIA
+  CHEQUE
+  OUTROS
+}
+
+enum StatusVenda {
+  PENDENTE
+  CONCLUIDA
+  CANCELADA
+}
+
+//
+// ==================== USUÁRIOS ====================
+//
+model Usuario {
+  id     String        @id @default(uuid())
+  nome   String
+  email  String        @unique
+  senha  String
+  perfil PerfilUsuario
+  ativo  Boolean       @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("usuarios")
+}
+
+enum PerfilUsuario {
+  ADMIN
+  GERENTE
+  VENDEDOR
+  ESTOQUISTA
+}

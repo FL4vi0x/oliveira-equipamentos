@@ -1,0 +1,31 @@
+# Dependências
+node_modules/
+.pnpm-debug.log*
+
+# Build e Saídas
+dist/
+build/
+*.exe
+
+# IDEs e Sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Ambiente e Segredo
+.env
+.env.*
+!.env.example
+
+# Prisma
+/packages/backend/src/prisma/@generated
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Electron Builder
+dist_electron/

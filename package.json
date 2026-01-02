@@ -1,0 +1,19 @@
+{
+  "name": "oliveira-equipamentos",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm:dev:backend\" \"pnpm:dev:frontend\" \"pnpm:dev:electron\"",
+    "dev:backend": "cd packages/backend && pnpm start:dev",
+    "dev:frontend": "cd packages/frontend && pnpm dev",
+    "dev:electron": "wait-on http://localhost:5173 && cd packages/electron && pnpm start",
+    "build": "pnpm -r build",
+    "prisma:migrate": "cd packages/backend && pnpm prisma migrate dev",
+    "prisma:studio": "cd packages/backend && pnpm prisma studio",
+    "db:seed": "cd packages/backend && pnpm prisma db seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  }
+}
