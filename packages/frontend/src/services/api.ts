@@ -36,7 +36,7 @@ export const api = {
     return response.data;
   },
 
-  async post<T>(endpoint: string, data?: any): Promise<T> {
+  async post<T>(endpoint: string, data?: unknown): Promise<T> {
     if (isElectron()) {
       return window.electronAPI.apiRequest({
         method: 'POST',
@@ -48,7 +48,7 @@ export const api = {
     return response.data;
   },
 
-  async put<T>(endpoint: string, data?: any): Promise<T> {
+  async put<T>(endpoint: string, data?: unknown): Promise<T> {
     if (isElectron()) {
       return window.electronAPI.apiRequest({
         method: 'PUT',
