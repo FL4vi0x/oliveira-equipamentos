@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProdutosController } from './produtos.controller';
+import { ProdutosService } from './produtos.service';
 
 describe('ProdutosController', () => {
   let controller: ProdutosController;
@@ -9,8 +10,8 @@ describe('ProdutosController', () => {
       controllers: [ProdutosController],
       providers: [
         {
-          provide: 'ProdutosService',
-          useValue: {}, // Mock simples
+          provide: ProdutosService,
+          useValue: {}, // Mock vazio
         },
       ],
     }).compile();

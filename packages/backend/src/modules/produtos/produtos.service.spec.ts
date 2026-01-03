@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProdutosService } from './produtos.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('ProdutosService', () => {
   let service: ProdutosService;
@@ -9,8 +10,8 @@ describe('ProdutosService', () => {
       providers: [
         ProdutosService,
         {
-          provide: 'PrismaService',
-          useValue: {}, // Mock simples só para o teste passar
+          provide: PrismaService,
+          useValue: {}, // Mock vazio
         },
       ],
     }).compile();
