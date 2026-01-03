@@ -33,4 +33,6 @@ async function bootstrap() {
   console.log(`🚀 Backend rodando em: http://localhost:${port}/api`);
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Erro ao iniciar o servidor:', err);
+});
