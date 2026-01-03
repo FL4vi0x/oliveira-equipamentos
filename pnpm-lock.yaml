@@ -15,12 +15,24 @@ importers:
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
+      eslint:
+        specifier: ^9.18.0
+        version: 9.39.2(jiti@2.6.1)
+      eslint-config-prettier:
+        specifier: ^10.0.1
+        version: 10.1.8(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-prettier:
+        specifier: ^5.2.2
+        version: 5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)
       husky:
         specifier: ^9.0.11
         version: 9.1.7
       lint-staged:
         specifier: ^15.2.2
         version: 15.5.2
+      prettier:
+        specifier: ^3.4.2
+        version: 3.7.4
       wait-on:
         specifier: ^7.2.0
         version: 7.2.0
