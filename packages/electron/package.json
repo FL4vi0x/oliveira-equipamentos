@@ -10,7 +10,7 @@
     "package": "electron-builder build --config electron-builder.yml"
   },
   "dependencies": {
-    "electron": "^28.0.0"
+    "electron": "^28.3.3"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
