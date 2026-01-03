@@ -28,6 +28,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build Prisma Client
+        run: cd packages/backend && pnpm prisma generate
+
       - name: Lint
         run: pnpm -r run lint
 
