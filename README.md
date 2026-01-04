@@ -55,5 +55,16 @@ Sistema de gestão integrado para a Oliveira Equipamentos, focado em controle de
 - **GitHub Actions:** Pipeline configurado para lint e testes automáticos em cada Push/PR.
 - **Husky:** Hooks de pre-commit para garantir a formatação do código.
 
+## 🌿 Estrutura de Branches
+
+Para manter a estabilidade do projeto, utilizamos o seguinte modelo:
+
+- **`main`**: Código em produção. Apenas merges via Pull Request.
+- **`develop`**: Integração de novas funcionalidades. É a branch de trabalho estável.
+- **`feature/*`**: Desenvolvimento de novas tarefas (ex: `feature/cadastrar-produto`).
+
+> [!TIP]
+> Sempre desenvolva em uma branch separada e faça o merge para a `develop` quando terminar.
+
 ---
 Desenvolvido por Oliveira Equipamentos.
