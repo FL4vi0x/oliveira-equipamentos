@@ -2,6 +2,10 @@
 
 Sistema de gestão integrado para a Oliveira Equipamentos, focado em controle de estoque, ordens de serviço e vendas.
 
+> [!NOTE]
+> Para detalhes sobre a estrutura técnica e padrões de código, veja o documento de [Arquitetura](docs/ARCHITECTURE.md).
+
+
 ## 🚀 Tecnologias principais
 
 - **Monorepo:** PNPM Workspaces
