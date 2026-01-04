@@ -10,10 +10,28 @@
     "build": "pnpm -r build",
     "prisma:migrate": "cd packages/backend && pnpm prisma migrate dev",
     "prisma:studio": "cd packages/backend && pnpm prisma studio",
-    "db:seed": "cd packages/backend && pnpm prisma db seed"
+    "db:seed": "cd packages/backend && pnpm prisma db seed",
+    "prepare": "husky"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "wait-on": "^7.2.0"
+    "wait-on": "^7.2.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2"
+  },
+  "lint-staged": {
+    "packages/backend/**/*.{ts,js}": [
+      "pnpm --filter backend lint"
+    ],
+    "packages/frontend/**/*.{ts,js,tsx}": [
+      "pnpm --filter frontend lint"
+    ]
+  },
+  "dependencies": {
+    "electron": "^28.3.3"
   }
 }

@@ -17,7 +17,7 @@ import { FilterProdutoDto } from './dto/filter-produto.dto';
 
 @Controller('produtos')
 export class ProdutosController {
-  constructor(private readonly produtosService: ProdutosService) { }
+  constructor(private readonly produtosService: ProdutosService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

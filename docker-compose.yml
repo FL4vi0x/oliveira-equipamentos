@@ -5,13 +5,38 @@ services:
     image: postgres:15-alpine
     container_name: oliveira-db
     environment:
-      POSTGRES_USER: oliveira
-      POSTGRES_PASSWORD: oliveira123
-      POSTGRES_DB: oliveira_erp
+      POSTGRES_USER: ${POSTGRES_USER:-oliveira}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-oliveira123}
+      POSTGRES_DB: ${POSTGRES_DB:-oliveira_erp}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    container_name: oliveira-backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-oliveira}:${POSTGRES_PASSWORD:-oliveira123}@postgres:5432/${POSTGRES_DB:-oliveira_erp}?schema=public
+      BACKEND_PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+    container_name: oliveira-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
     restart: unless-stopped
 
 volumes:

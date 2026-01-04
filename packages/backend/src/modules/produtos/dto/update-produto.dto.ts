@@ -3,7 +3,7 @@ import { CreateProdutoDto } from './create-produto.dto';
 import { IsBoolean, IsOptional } from 'class-validator';
 
 export class UpdateProdutoDto extends PartialType(CreateProdutoDto) {
-    @IsBoolean()
-    @IsOptional()
-    ativo?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  ativo?: boolean;
 }
