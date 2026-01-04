@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://oliveira:oliveira123@localhost:5432/oliveira_erp?schema=public"
+  url      = env("DATABASE_URL")
 }
 
 
