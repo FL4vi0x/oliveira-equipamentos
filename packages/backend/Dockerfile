@@ -6,17 +6,11 @@ WORKDIR /app
 # Instalando pnpm
 RUN npm install -g pnpm
 
-# Copiando arquivos de configuração do monorepo
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY packages/backend/package.json ./packages/backend/
+# Copiando arquivos do monorepo
+COPY . .
 
-# Instalando dependências (apenas do backend)
-RUN pnpm install --filter backend...
-
-# Copiando o resto do código do backend
-COPY packages/backend ./packages/backend
-
-# Gerando Prisma Client e Build
+# Instalando dependências e buildando
+RUN pnpm install --frozen-lockfile
 RUN cd packages/backend && pnpm prisma generate && pnpm run build
 
 # Estágio de Produção
@@ -26,7 +20,9 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY --from=build /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/package.json ./
+# Copiamos o workspace inteiro no estágio de produção (ajustado para ser leve)
+COPY --from=build /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
+COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/packages/backend/package.json ./packages/backend/
 COPY --from=build /app/packages/backend/dist ./packages/backend/dist
 COPY --from=build /app/packages/backend/node_modules ./packages/backend/node_modules
@@ -34,3 +30,4 @@ COPY --from=build /app/packages/backend/node_modules ./packages/backend/node_mod
 EXPOSE 3001
 
 CMD ["pnpm", "--filter", "backend", "start:prod"]
+
