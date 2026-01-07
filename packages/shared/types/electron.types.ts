@@ -5,5 +5,6 @@ export interface ElectronAPI {
         method: 'GET' | 'POST' | 'PUT' | 'DELETE';
         endpoint: string;
         data?: any;
+        token?: string;
     }) => Promise<any>;
 }

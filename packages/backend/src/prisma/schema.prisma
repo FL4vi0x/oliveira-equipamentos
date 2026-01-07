@@ -68,6 +68,7 @@ model MovimentacaoEstoque {
   createdAt   DateTime         @default(now()) @map("created_at")
 
   produto     Produto          @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  usuario     Usuario?         @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
 
   @@map("movimentacoes_estoque")
 }
@@ -136,6 +137,7 @@ model Venda {
   updatedAt       DateTime       @updatedAt @map("updated_at")
 
   cliente         Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  usuario         Usuario        @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
   itens           ItemVenda[]
 
   @@map("vendas")
@@ -179,15 +181,20 @@ enum StatusVenda {
 // ==================== USUÁRIOS ====================
 //
 model Usuario {
-  id        String         @id @default(uuid())
-  nome      String
-  email     String         @unique
-  senha     String
-  perfil    PerfilUsuario
-  ativo     Boolean        @default(true)
+  id           String         @id @default(uuid())
+  nome         String
+  email        String         @unique
+  cpf          String         @unique
+  senha        String
+  perfil       PerfilUsuario
+  ativo        Boolean        @default(true)
+  refreshToken String?        @map("refresh_token")
 
-  createdAt DateTime       @default(now()) @map("created_at")
-  updatedAt DateTime       @updatedAt @map("updated_at")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  movimentacoes MovimentacaoEstoque[]
+  vendas        Venda[]
 
   @@map("usuarios")
 }

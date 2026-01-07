@@ -22,6 +22,51 @@ axiosClient.interceptors.request.use((config) => {
   }
   return config;
 });
+// Interceptor de resposta para tratamento de erros
+axiosClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Se o erro for 401 (Unauthorized) e não for uma tentativa de refresh
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/refresh')) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (!refreshToken) {
+          throw new Error('Sem refresh token');
+        }
+
+        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+          refresh_token: refreshToken,
+        });
+
+        if (data.access_token) {
+          localStorage.setItem('token', data.access_token);
+          if (data.refresh_token) {
+            localStorage.setItem('refresh_token', data.refresh_token);
+          }
+
+          originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
+          return axiosClient(originalRequest);
+        }
+      } catch (refreshError) {
+        // Se falhar o refresh, desloga o usuário
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// Função auxiliar para pegar o token
+const getToken = () => localStorage.getItem('token');
 
 // API wrapper que escolhe entre Electron IPC ou Axios
 export const api = {
@@ -30,6 +75,7 @@ export const api = {
       return window.electronAPI.apiRequest({
         method: 'GET',
         endpoint,
+        token: getToken() || undefined,
       });
     }
     const response = await axiosClient.get<T>(endpoint);
@@ -42,6 +88,7 @@ export const api = {
         method: 'POST',
         endpoint,
         data,
+        token: getToken() || undefined,
       });
     }
     const response = await axiosClient.post<T>(endpoint, data);
@@ -54,6 +101,7 @@ export const api = {
         method: 'PUT',
         endpoint,
         data,
+        token: getToken() || undefined,
       });
     }
     const response = await axiosClient.put<T>(endpoint, data);
@@ -65,6 +113,7 @@ export const api = {
       return window.electronAPI.apiRequest({
         method: 'DELETE',
         endpoint,
+        token: getToken() || undefined,
       });
     }
     const response = await axiosClient.delete<T>(endpoint);

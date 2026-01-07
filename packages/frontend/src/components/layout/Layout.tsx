@@ -1,10 +1,18 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import './Layout.css';
 
 const Layout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="layout">
@@ -12,44 +20,44 @@ const Layout = () => {
         <div className="logo">
           <h2>Oliveira Equipamentos</h2>
         </div>
-        
+
         <nav className="menu">
-          <Link 
-            to="/dashboard" 
-            className={isActive('/dashboard') ? 'active' : ''}
+          <Link
+            to="/erp/dashboard"
+            className={isActive('/erp/dashboard') ? 'active' : ''}
           >
             📊 Dashboard
           </Link>
-          
+
           <div className="menu-section">ERP</div>
-          <Link 
-            to="/produtos" 
-            className={isActive('/produtos') ? 'active' : ''}
+          <Link
+            to="/erp/produtos"
+            className={isActive('/erp/produtos') ? 'active' : ''}
           >
             📦 Produtos
           </Link>
-          <Link 
-            to="/vendas" 
-            className={isActive('/vendas') ? 'active' : ''}
+          <Link
+            to="/erp/vendas"
+            className={isActive('/erp/vendas') ? 'active' : ''}
           >
             💰 Vendas
           </Link>
-          <Link 
-            to="/clientes" 
-            className={isActive('/clientes') ? 'active' : ''}
+          <Link
+            to="/erp/clientes"
+            className={isActive('/erp/clientes') ? 'active' : ''}
           >
             👥 Clientes
           </Link>
-          <Link 
-            to="/estoque" 
-            className={isActive('/estoque') ? 'active' : ''}
+          <Link
+            to="/erp/estoque"
+            className={isActive('/erp/estoque') ? 'active' : ''}
           >
             📋 Estoque
           </Link>
-          
+
           <div className="menu-section">PDV</div>
-          <Link 
-            to="/pdv" 
+          <Link
+            to="/pdv"
             className={isActive('/pdv') ? 'active' : ''}
           >
             🛒 Frente de Caixa
@@ -63,10 +71,16 @@ const Layout = () => {
             <h1>{getPageTitle(location.pathname)}</h1>
           </div>
           <div className="header-right">
-            <span>👤 Usuário</span>
+            <div className="user-info">
+              <span className="user-name">👤 {user?.nome || 'Usuário'}</span>
+              <span className="user-profile">{user?.perfil}</span>
+            </div>
+            <button onClick={handleLogout} className="logout-button">
+              Sair
+            </button>
           </div>
         </header>
-        
+
         <div className="content">
           <Outlet />
         </div>
@@ -77,11 +91,11 @@ const Layout = () => {
 
 function getPageTitle(path: string): string {
   const titles: Record<string, string> = {
-    '/dashboard': 'Dashboard',
-    '/produtos': 'Gestão de Produtos',
-    '/vendas': 'Vendas',
-    '/clientes': 'Clientes',
-    '/estoque': 'Controle de Estoque',
+    '/erp/dashboard': 'Dashboard',
+    '/erp/produtos': 'Gestão de Produtos',
+    '/erp/vendas': 'Vendas',
+    '/erp/clientes': 'Clientes',
+    '/erp/estoque': 'Controle de Estoque',
     '/pdv': 'Ponto de Venda',
   };
   return titles[path] || 'Oliveira Equipamentos';

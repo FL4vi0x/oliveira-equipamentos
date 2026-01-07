@@ -58,14 +58,15 @@ ipcMain.handle('get-app-version', async () => {
   return app.getVersion();
 });
 
-ipcMain.handle('api-request', async (_event, { method, endpoint, data }) => {
+ipcMain.handle('api-request', async (_event, { method, endpoint, data, token }) => {
   const baseURL = process.env.VITE_API_URL || 'http://localhost:3001/api';
-  
+
   try {
     const response = await fetch(`${baseURL}${endpoint}`, {
       method,
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: data ? JSON.stringify(data) : undefined,
     });

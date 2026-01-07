@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE';
     endpoint: string;
     data?: any;
+    token?: string;
   }) => ipcRenderer.invoke('api-request', params),
 } as ElectronAPI);
 

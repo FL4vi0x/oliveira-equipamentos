@@ -1,4 +1,5 @@
 import { PrismaClient, PerfilUsuario } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -25,13 +26,16 @@ async function main() {
 
   // 2. Criar Usuário Admin Inicial (Aplicação)
   console.log('Usuário Admin...');
+  const hashedAdminPassword = await bcrypt.hash('admin123', 10);
+
   await prisma.usuario.upsert({
     where: { email: 'admin@oliveira.com' },
     update: {},
     create: {
       nome: 'Administrador Oliveira',
       email: 'admin@oliveira.com',
-      senha: 'admin123', // Em produção isso deve ser hasheado
+      cpf: '00000000000',
+      senha: hashedAdminPassword,
       perfil: PerfilUsuario.ADMIN,
       ativo: true,
     },
