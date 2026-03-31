@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExecutionContext } from '@nestjs/common';
+
 import { ProdutosController } from './produtos.controller';
 import { ProdutosService } from './produtos.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -18,7 +18,7 @@ describe('ProdutosController', () => {
       ],
     })
       .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: (_ctx: ExecutionContext) => true })
+      .useValue({ canActivate: () => true })
       .compile();
 
     controller = module.get<ProdutosController>(ProdutosController);
