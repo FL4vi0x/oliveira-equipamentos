@@ -34,10 +34,10 @@ export class AuthService {
     };
 
     const access_token = this.jwtService.sign(payload);
-    const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' }); // Long lived
+    const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' });
 
-    // In a real app we should hash the refresh token before saving
-    await this.usuariosService.updateRefreshToken(user.id, refresh_token);
+    const refreshTokenHash = await bcrypt.hash(refresh_token, 10);
+    await this.usuariosService.updateRefreshToken(user.id, refreshTokenHash);
 
     return {
       access_token,
@@ -56,7 +56,11 @@ export class AuthService {
       const payload = this.jwtService.verify(refreshToken);
       const user = await this.usuariosService.findById(payload.sub);
 
-      if (!user || user.refreshToken !== refreshToken) {
+      if (
+        !user ||
+        !user.refreshToken ||
+        !(await bcrypt.compare(refreshToken, user.refreshToken))
+      ) {
         throw new UnauthorizedException('Refresh token inválido');
       }
 
