@@ -4,6 +4,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ProdutosModule } from './modules/produtos/produtos.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoriasModule } from './modules/categorias/categorias.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -17,6 +18,7 @@ import { AppService } from './app.service';
     UsuariosModule,
     AuthModule,
     ProdutosModule,
+    CategoriasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
