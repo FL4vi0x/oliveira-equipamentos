@@ -76,8 +76,10 @@ ipcMain.handle('api-request', async (_event, { method, endpoint, data, token }) 
     }
 
     return await response.json();
-  } catch (error) {
-    console.error('API request failed:', error);
+  } catch (error: any) {
+    if (!error.message?.includes('status: 401')) {
+      console.error('API request failed:', error);
+    }
     throw error;
   }
 });
