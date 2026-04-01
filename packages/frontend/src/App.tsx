@@ -8,6 +8,7 @@ import Dashboard from './pages/erp/Dashboard';
 import ProdutosPage from './pages/erp/produtos/ProdutosPage';
 import CategoriasPage from './pages/erp/categorias/CategoriasPage';
 import ClientesPage from './pages/erp/clientes/ClientesPage';
+import { EstoquePage } from './pages/erp/estoque/EstoquePage';
 import Login from './pages/Login';
 import './styles/global.css';
 
@@ -37,6 +38,7 @@ function App() {
                   <Route path="produtos" element={<ProdutosPage />} />
                   <Route path="categorias" element={<CategoriasPage />} />
                   <Route path="clientes" element={<ClientesPage />} />
+                  <Route path="estoque" element={<EstoquePage />} />
                   {/* Adicionar mais rotas ERP aqui */}
                 </Route>
               </Route>
