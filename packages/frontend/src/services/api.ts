@@ -70,52 +70,49 @@ const getToken = () => localStorage.getItem('token');
 
 // API wrapper que escolhe entre Electron IPC ou Axios
 export const api = {
-  async get<T>(endpoint: string): Promise<T> {
-    if (isElectron()) {
-      return window.electronAPI.apiRequest({
-        method: 'GET',
+  async electronRequest<T>(method: 'GET'|'POST'|'PUT'|'PATCH'|'DELETE', endpoint: string, data?: unknown): Promise<T> {
+    try {
+      return await window.electronAPI.apiRequest({
+        method,
         endpoint,
+        data,
         token: getToken() || undefined,
       });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message?.includes('status: 401')) {
+        // Aproveitar o interceptor do axios para disparar a lógica de refresh ou logout
+        return axiosClient.request<T>({ method, url: endpoint, data }).then(res => res.data);
+      }
+      throw error;
     }
+  },
+
+  async get<T>(endpoint: string): Promise<T> {
+    if (isElectron()) return this.electronRequest<T>('GET', endpoint);
     const response = await axiosClient.get<T>(endpoint);
     return response.data;
   },
 
   async post<T>(endpoint: string, data?: unknown): Promise<T> {
-    if (isElectron()) {
-      return window.electronAPI.apiRequest({
-        method: 'POST',
-        endpoint,
-        data,
-        token: getToken() || undefined,
-      });
-    }
+    if (isElectron()) return this.electronRequest<T>('POST', endpoint, data);
     const response = await axiosClient.post<T>(endpoint, data);
     return response.data;
   },
 
   async put<T>(endpoint: string, data?: unknown): Promise<T> {
-    if (isElectron()) {
-      return window.electronAPI.apiRequest({
-        method: 'PUT',
-        endpoint,
-        data,
-        token: getToken() || undefined,
-      });
-    }
+    if (isElectron()) return this.electronRequest<T>('PUT', endpoint, data);
     const response = await axiosClient.put<T>(endpoint, data);
     return response.data;
   },
 
+  async patch<T>(endpoint: string, data?: unknown): Promise<T> {
+    if (isElectron()) return this.electronRequest<T>('PATCH', endpoint, data);
+    const response = await axiosClient.patch<T>(endpoint, data);
+    return response.data;
+  },
+
   async delete<T>(endpoint: string): Promise<T> {
-    if (isElectron()) {
-      return window.electronAPI.apiRequest({
-        method: 'DELETE',
-        endpoint,
-        token: getToken() || undefined,
-      });
-    }
+    if (isElectron()) return this.electronRequest<T>('DELETE', endpoint);
     const response = await axiosClient.delete<T>(endpoint);
     return response.data;
   },

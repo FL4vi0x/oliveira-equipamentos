@@ -218,12 +218,4 @@ export class ProdutosService {
       },
     });
   }
-
-  async listCategorias() {
-    return await this.prisma.categoria.findMany({
-      orderBy: {
-        nome: 'asc',
-      },
-    });
-  }
 }

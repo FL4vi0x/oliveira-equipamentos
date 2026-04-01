@@ -37,6 +37,12 @@ const Layout = () => {
             📦 Produtos
           </Link>
           <Link
+            to="/erp/categorias"
+            className={isActive('/erp/categorias') ? 'active' : ''}
+          >
+            🏷️ Categorias
+          </Link>
+          <Link
             to="/erp/vendas"
             className={isActive('/erp/vendas') ? 'active' : ''}
           >
@@ -93,6 +99,7 @@ function getPageTitle(path: string): string {
   const titles: Record<string, string> = {
     '/erp/dashboard': 'Dashboard',
     '/erp/produtos': 'Gestão de Produtos',
+    '/erp/categorias': 'Categorias de Produtos',
     '/erp/vendas': 'Vendas',
     '/erp/clientes': 'Clientes',
     '/erp/estoque': 'Controle de Estoque',

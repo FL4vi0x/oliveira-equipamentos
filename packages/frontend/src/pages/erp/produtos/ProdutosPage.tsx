@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, Search, Edit2, Power, PowerOff } from 'lucide-react';
 import api from '../../../services/api';
+import { produtosService } from '../../../services/produtos.service';
+import { Modal } from '../../../components/ui/Modal/Modal';
+import { ProdutoForm } from './components/ProdutoForm';
+import { useToast } from '../../../contexts/ToastContext';
 import './ProdutosPage.css';
 
 interface Categoria {
@@ -32,7 +37,13 @@ interface ProdutosResponse {
 const ProdutosPage = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [produtoEditing, setProdutoEditing] = useState<Produto | null>(null);
+  const [confirmToggle, setConfirmToggle] = useState<Produto | null>(null);
   const limit = 10;
+
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data, isLoading, error } = useQuery<ProdutosResponse>({
     queryKey: ['produtos', page, search],
@@ -40,6 +51,16 @@ const ProdutosPage = () => {
       api.get<ProdutosResponse>(
         `/produtos?page=${page}&limit=${limit}&search=${search}`
       ),
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: (id: string) => produtosService.toggleAtivo(id),
+    onSuccess: () => {
+      toast('Status do produto alterado com sucesso!', 'success');
+      queryClient.invalidateQueries({ queryKey: ['produtos'] });
+      setConfirmToggle(null);
+    },
+    onError: () => toast('Erro ao alterar status do produto.', 'error'),
   });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -55,10 +76,28 @@ const ProdutosPage = () => {
     );
   }
 
+  const openNovoModal = () => {
+    setProdutoEditing(null);
+    setIsFormOpen(true);
+  };
+
+  const openEditarModal = (p: Produto) => {
+    setProdutoEditing(p);
+    setIsFormOpen(true);
+  };
+
+  const closeFormModal = () => {
+    setIsFormOpen(false);
+    setProdutoEditing(null);
+  };
+
   return (
     <div className="produtos-page">
       <div className="produtos-header">
-        <button className="btn btn-primary">+ Novo Produto</button>
+        <button className="btn btn-primary" onClick={openNovoModal}>
+          <Plus size={18} style={{ marginRight: '8px' }} />
+          Novo Produto
+        </button>
         
         <form onSubmit={handleSearch} className="search-form">
           <input
@@ -68,8 +107,8 @@ const ProdutosPage = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="search-input"
           />
-          <button type="submit" className="btn btn-secondary">
-            🔍 Buscar
+          <button type="submit" className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Search size={18} /> Buscar
           </button>
         </form>
       </div>
@@ -109,8 +148,12 @@ const ProdutosPage = () => {
                       </span>
                     </td>
                     <td>
-                      <button className="btn-icon" title="Editar">✏️</button>
-                      <button className="btn-icon" title="Excluir">🗑️</button>
+                      <button className="btn-icon" title="Editar" onClick={() => openEditarModal(produto)}>
+                        <Edit2 size={16} />
+                      </button>
+                      <button className="btn-icon" title={produto.ativo ? 'Inativar' : 'Ativar'} onClick={() => setConfirmToggle(produto)}>
+                        {produto.ativo ? <PowerOff size={16} color="#ef4444" /> : <Power size={16} color="#10b981" />}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -144,6 +187,41 @@ const ProdutosPage = () => {
           )}
         </>
       )}
+
+      {/* Modal de Formulário */}
+      <Modal 
+        isOpen={isFormOpen} 
+        onClose={closeFormModal} 
+        title={produtoEditing ? `Editar Produto - ${produtoEditing.codigoInterno}` : 'Novo Produto'}
+      >
+        <ProdutoForm 
+          produtoId={produtoEditing?.id} 
+          initialData={produtoEditing} 
+          onSuccess={closeFormModal} 
+          onCancel={closeFormModal} 
+        />
+      </Modal>
+
+      {/* Modal de Confirmação de Toggle */}
+      <Modal 
+        isOpen={!!confirmToggle} 
+        onClose={() => setConfirmToggle(null)} 
+        title="Confirmar Ação"
+      >
+        <div style={{ padding: '0 0 1rem 0' }}>
+          <p>Tem certeza que deseja <strong>{confirmToggle?.ativo ? 'INATIVAR' : 'ATIVAR'}</strong> o produto <strong>{confirmToggle?.nome}</strong>?</p>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', justifyContent: 'flex-end' }}>
+            <button className="btn btn-secondary" onClick={() => setConfirmToggle(null)}>Cancelar</button>
+            <button 
+              className="btn btn-primary" 
+              style={{ backgroundColor: confirmToggle?.ativo ? '#ef4444' : '#10b981', borderColor: confirmToggle?.ativo ? '#ef4444' : '#10b981' }}
+              onClick={() => confirmToggle && toggleMutation.mutate(confirmToggle.id)}
+            >
+              {toggleMutation.isPending ? 'Aguarde...' : 'Confirmar'}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

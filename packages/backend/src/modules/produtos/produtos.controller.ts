@@ -54,11 +54,6 @@ export class ProdutosController {
     return this.produtosService.findByCodigoBarras(codigo);
   }
 
-  @Get('categorias/listar')
-  listCategorias() {
-    return this.produtosService.listCategorias();
-  }
-
   @Patch(':id/toggle-ativo')
   @HttpCode(HttpStatus.OK)
   toggleAtivo(@Param('id') id: string) {
