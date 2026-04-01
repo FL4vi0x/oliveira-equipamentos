@@ -13,6 +13,7 @@ COPY packages/frontend/package.json ./packages/frontend/
 RUN pnpm install --filter frontend...
 
 # Copiando código e buildando
+COPY packages/shared ./packages/shared
 COPY packages/frontend ./packages/frontend
 RUN cd packages/frontend && pnpm run build
 

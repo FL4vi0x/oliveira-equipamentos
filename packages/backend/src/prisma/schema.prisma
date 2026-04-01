@@ -98,9 +98,12 @@ model Cliente {
   bairro      String?
   cidade      String?
   estado      String?  @db.Char(2)
-  cep         String?
-  observacoes String?
-  ativo       Boolean  @default(true)
+  cep              String?
+  // Campos exclusivos Pessoa Jurídica
+  nomeFantasia     String?  @map("nome_fantasia")
+  inscricaoEstadual String? @map("inscricao_estadual")
+  observacoes      String?
+  ativo            Boolean  @default(true)
 
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
