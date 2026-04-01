@@ -7,6 +7,7 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/erp/Dashboard';
 import ProdutosPage from './pages/erp/produtos/ProdutosPage';
 import CategoriasPage from './pages/erp/categorias/CategoriasPage';
+import ClientesPage from './pages/erp/clientes/ClientesPage';
 import Login from './pages/Login';
 import './styles/global.css';
 
@@ -35,6 +36,7 @@ function App() {
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="produtos" element={<ProdutosPage />} />
                   <Route path="categorias" element={<CategoriasPage />} />
+                  <Route path="clientes" element={<ClientesPage />} />
                   {/* Adicionar mais rotas ERP aqui */}
                 </Route>
               </Route>
