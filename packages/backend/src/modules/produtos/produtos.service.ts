@@ -77,17 +77,30 @@ export class ProdutosService {
       ];
     }
 
-    return await this.prisma.produto.findMany({
-      where,
-      include: {
-        categoria: true,
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.produto.findMany({
+        where,
+        include: {
+          categoria: true,
+        },
+        orderBy: {
+          nome: 'asc',
+        },
+        skip,
+        take: limit,
+      }),
+      this.prisma.produto.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-      orderBy: {
-        nome: 'asc',
-      },
-      skip,
-      take: limit,
-    });
+    };
   }
 
   async findOne(id: string) {

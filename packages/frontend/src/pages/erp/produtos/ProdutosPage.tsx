@@ -3,11 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../../../services/api';
 import './ProdutosPage.css';
 
+interface Categoria {
+  id: string;
+  nome: string;
+}
+
 interface Produto {
   id: string;
   codigoInterno: string;
   nome: string;
-  categoria: string;
+  categoria: Categoria;
   unidadeMedida: string;
   precoVenda: number;
   estoqueAtual: number;
@@ -92,7 +97,7 @@ const ProdutosPage = () => {
                   <tr key={produto.id}>
                     <td>{produto.codigoInterno}</td>
                     <td>{produto.nome}</td>
-                    <td>{produto.categoria}</td>
+                    <td>{produto.categoria.nome}</td>
                     <td>{produto.unidadeMedida}</td>
                     <td>R$ {Number(produto.precoVenda).toFixed(2)}</td>
                     <td className={produto.estoqueAtual <= 5 ? 'estoque-baixo' : ''}>

@@ -9,13 +9,16 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ProdutosService } from './produtos.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { FilterProdutoDto } from './dto/filter-produto.dto';
 
 @Controller('produtos')
+@UseGuards(JwtAuthGuard)
 export class ProdutosController {
   constructor(private readonly produtosService: ProdutosService) {}
 
@@ -54,5 +57,11 @@ export class ProdutosController {
   @Get('categorias/listar')
   listCategorias() {
     return this.produtosService.listCategorias();
+  }
+
+  @Patch(':id/toggle-ativo')
+  @HttpCode(HttpStatus.OK)
+  toggleAtivo(@Param('id') id: string) {
+    return this.produtosService.toggleAtivo(id);
   }
 }
