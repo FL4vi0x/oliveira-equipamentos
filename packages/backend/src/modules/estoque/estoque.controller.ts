@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { EstoqueService } from './estoque.service';
 import { CreateMovimentacaoDto } from './dto/create-movimentacao.dto';
 import { ExtratoEstoqueDto } from './dto/extrato-estoque.dto';
@@ -34,7 +43,10 @@ export class EstoqueController {
 
   // 4. Extrato/Histórico paginado de um produto específico (Permitido a todos logados)
   @Get('extrato/:produtoId')
-  buscarExtrato(@Param('produtoId') produtoId: string, @Query() filter: ExtratoEstoqueDto) {
+  buscarExtrato(
+    @Param('produtoId') produtoId: string,
+    @Query() filter: ExtratoEstoqueDto,
+  ) {
     return this.estoqueService.buscarExtrato(produtoId, filter);
   }
 }

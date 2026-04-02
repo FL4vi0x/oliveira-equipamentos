@@ -1,7 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateMovimentacaoDto } from './dto/create-movimentacao.dto';
-import { TipoMovimentacao } from '@prisma/client';
 import { ExtratoEstoqueDto } from './dto/extrato-estoque.dto';
 
 @Injectable()
@@ -20,11 +23,14 @@ export class EstoqueService {
       });
 
       if (!produto) throw new NotFoundException('Produto não encontrado');
-      if (!produto.ativo) throw new BadRequestException('Produto inativo não pode ser movimentado');
+      if (!produto.ativo)
+        throw new BadRequestException(
+          'Produto inativo não pode ser movimentado',
+        );
 
       // 2. Definir a operação matemática (Somar ou Subtrair)
       const isEntrada = ['ENTRADA', 'AJUSTE', 'DEVOLUCAO'].includes(dto.tipo);
-      // Se for AJUSTE, mas o usuário preencheu uma quantidade negativa (caso do backend permitir decimal nativamente), 
+      // Se for AJUSTE, mas o usuário preencheu uma quantidade negativa (caso do backend permitir decimal nativamente),
       // ou se tivermos UI com saídas de ajuste, assumiremos que AJUSTE é tipo de entrada, e "AJUSTE DE SAIDA" pode ser SAIDA com motivo Ajuste.
       // O Prisma suporta apenas Math Absoluto na API de increment/decrement
       const qty = Number(dto.quantidade);
@@ -71,7 +77,9 @@ export class EstoqueService {
         take: Number(limit),
         include: {
           usuario: { select: { nome: true } },
-          produto: { select: { nome: true, codigoInterno: true, unidadeMedida: true } },
+          produto: {
+            select: { nome: true, codigoInterno: true, unidadeMedida: true },
+          },
         },
       }),
       this.prisma.movimentacaoEstoque.count({ where }),
@@ -125,8 +133,10 @@ export class EstoqueService {
       .filter((p) => p.criticidade !== 'NORMAL')
       // Ordena CRITICO primeiro, depois pelo gap de estoqueAtual
       .sort((a, b) => {
-        if (a.criticidade === 'CRITICO' && b.criticidade !== 'CRITICO') return -1;
-        if (b.criticidade === 'CRITICO' && a.criticidade !== 'CRITICO') return 1;
+        if (a.criticidade === 'CRITICO' && b.criticidade !== 'CRITICO')
+          return -1;
+        if (b.criticidade === 'CRITICO' && a.criticidade !== 'CRITICO')
+          return 1;
         return a.estoqueAtual - b.estoqueAtual; // Menos produto primeiro
       });
 

@@ -1,7 +1,6 @@
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  ValidationArguments,
 } from 'class-validator';
 
 function validateCpf(cpf: string): boolean {
@@ -45,7 +44,7 @@ function validateCnpj(cnpj: string): boolean {
 
 @ValidatorConstraint({ name: 'CpfCnpj', async: false })
 export class CpfCnpjConstraint implements ValidatorConstraintInterface {
-  validate(value: string, _args: ValidationArguments): boolean {
+  validate(value: string): boolean {
     if (!value) return false;
     const digits = value.replace(/\D/g, '');
     if (digits.length === 11) return validateCpf(digits);
@@ -53,7 +52,7 @@ export class CpfCnpjConstraint implements ValidatorConstraintInterface {
     return false;
   }
 
-  defaultMessage(_args: ValidationArguments): string {
+  defaultMessage(): string {
     return 'CPF ou CNPJ inválido (verifique os dígitos verificadores)';
   }
 }
