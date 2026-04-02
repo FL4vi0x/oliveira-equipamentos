@@ -172,7 +172,7 @@ export class ClientesService {
           estado: data.state || '',
         };
       }
-    } catch (err) {
+    } catch {
       // Ignora erro e tenta o fallback
     }
 
