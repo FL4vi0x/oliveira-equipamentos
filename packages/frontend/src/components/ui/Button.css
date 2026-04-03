@@ -1,0 +1,95 @@
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* Sizes */
+.btn-size-sm {
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.btn-size-md {
+  height: 40px;
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.btn-size-lg {
+  height: 48px;
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-base);
+}
+
+/* Variants */
+.btn-variant-primary {
+  background: var(--color-primary-600);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.15);
+}
+
+.btn-variant-primary:hover:not(:disabled) {
+  background: var(--color-primary-700);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.btn-variant-secondary {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.btn-variant-secondary:hover:not(:disabled) {
+  background: var(--color-neutral-50);
+  border-color: var(--color-neutral-300);
+}
+
+.btn-variant-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-variant-ghost:hover:not(:disabled) {
+  background: var(--color-neutral-100);
+  color: var(--text-primary);
+}
+
+.btn-variant-danger {
+  background: var(--color-danger-500);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.btn-variant-danger:hover:not(:disabled) {
+  background: var(--color-danger-600);
+  transform: translateY(-1px);
+}
+
+.btn-variant-success {
+  background: var(--color-success-500);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.btn-variant-success:hover:not(:disabled) {
+  background: var(--color-success-600);
+  transform: translateY(-1px);
+}
+
+/* Disabled */
+.ui-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
