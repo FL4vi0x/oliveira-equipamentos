@@ -46,8 +46,8 @@ export const AjusteEstoqueModal = ({ produtoId, produtoNome, estoqueAtual, unida
       onClose();
     },
     onError: (err: unknown) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const msg = (err as any)?.response?.data?.message || 'Erro ao movimentar estoque';
+      const error = err as { response?: { data?: { message?: string } } };
+      const msg = error?.response?.data?.message || 'Erro ao movimentar estoque';
       toast(msg, 'error');
     }
   });

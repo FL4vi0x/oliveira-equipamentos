@@ -112,8 +112,7 @@ export const EstoquePage = () => {
                 <td className="font-mono text-muted">{p.codigoInterno}</td>
                 <td><strong>{p.nome}</strong></td>
                 <td>
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  {(p as any).categoria?.nome || '-'}
+                  {((p as unknown) as { categoria?: { nome: string } })?.categoria?.nome || '-'}
                 </td>
                 <td className="texto-centro">
                   <span className={`estoque-bignumber ${p.criticidade === 'CRITICO' ? 'text-red' : ''}`}>
