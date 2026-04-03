@@ -63,8 +63,8 @@ const Layout = () => {
 
           <div className="menu-section">PDV</div>
           <Link
-            to="/pdv"
-            className={isActive('/pdv') ? 'active' : ''}
+            to="/erp/pdv"
+            className={isActive('/erp/pdv') ? 'active' : ''}
           >
             🛒 Frente de Caixa
           </Link>
@@ -87,7 +87,7 @@ const Layout = () => {
           </div>
         </header>
 
-        <div className="content">
+        <div className={`content${location.pathname === '/erp/pdv' ? ' content--pdv' : ''}`}>
           <Outlet />
         </div>
       </main>

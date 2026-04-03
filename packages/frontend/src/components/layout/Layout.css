@@ -129,4 +129,13 @@
   padding: 30px;
   overflow-y: auto;
   background: #f8fafc;
+  min-height: 0;
+}
+
+/* Modo PDV: sem padding, sem scroll — o componente ocupa tudo */
+.content--pdv {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
