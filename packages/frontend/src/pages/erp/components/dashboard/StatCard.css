@@ -6,13 +6,13 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .stat-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: #64748b;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
 }
 
 .stat-icon-container {
@@ -31,24 +31,24 @@
 }
 
 .stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
   margin: 0;
 }
 
 .stat-trend {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .trend-up {
-  color: #10b981;
+  color: var(--color-success-500);
 }
 
 .trend-down {
-  color: #f43f5e;
+  color: var(--color-danger-500);
 }

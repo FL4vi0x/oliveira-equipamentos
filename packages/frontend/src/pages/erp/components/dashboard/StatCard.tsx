@@ -20,8 +20,8 @@ export const StatCard: React.FC<StatCardProps> = ({
   value, 
   trend, 
   icon, 
-  iconBgColor = '#f1f5f9',
-  iconColor = '#64748b'
+  iconBgColor = 'var(--color-neutral-100)',
+  iconColor = 'var(--text-secondary)'
 }) => {
   return (
     <Card className="stat-card">
