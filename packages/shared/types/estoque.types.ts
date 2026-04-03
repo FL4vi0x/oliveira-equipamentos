@@ -50,4 +50,16 @@ export interface ProdutoEstoqueAlert {
   estoqueAtual: number;
   estoqueMinimo: number;
   criticidade: CriticidadeEstoque;
+  precoVenda?: number; // Adicionado para PDV
 }
+
+// ─── Vendas ───────────────────────────────────────────────────
+export type FormaPagamento = 
+  | 'DINHEIRO' 
+  | 'CARTAO_CREDITO' 
+  | 'CARTAO_DEBITO' 
+  | 'PIX' 
+  | 'BOLETO' 
+  | 'TRANSFERENCIA' 
+  | 'CHEQUE' 
+  | 'OUTROS';

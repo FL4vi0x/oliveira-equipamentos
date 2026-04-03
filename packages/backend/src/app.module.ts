@@ -7,6 +7,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CategoriasModule } from './modules/categorias/categorias.module';
 import { ClientesModule } from './modules/clientes/clientes.module';
 import { EstoqueModule } from './modules/estoque/estoque.module';
+import { CaixaModule } from './modules/caixa/caixa.module';
+import { VendasModule } from './modules/vendas/vendas.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -23,6 +25,8 @@ import { AppService } from './app.service';
     CategoriasModule,
     ClientesModule,
     EstoqueModule,
+    CaixaModule,
+    VendasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

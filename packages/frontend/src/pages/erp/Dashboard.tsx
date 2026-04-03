@@ -1,13 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { estoqueService } from '../../services/estoque.service';
-import { AlertTriangle, PackageOpen, ShoppingCart, Users } from 'lucide-react';
+import { vendasService } from '../../services/vendas.service';
+import { AlertTriangle, PackageOpen, ShoppingCart, TrendingUp, HandCoins } from 'lucide-react';
 import './Dashboard.css';
+
+interface VendaInfo {
+    id: string;
+    total: number | string;
+    [key: string]: unknown;
+}
 
 const Dashboard = () => {
     const navigate = useNavigate();
 
-    // Queries de Estoque
     const { data: produtos } = useQuery({
         queryKey: ['produtos-estoque'],
         queryFn: () => estoqueService.getAllProdutos(),
@@ -16,18 +22,46 @@ const Dashboard = () => {
     const { data: alertas } = useQuery({
         queryKey: ['alertas-estoque'],
         queryFn: () => estoqueService.getAlertasMinimo(),
-        refetchInterval: 5 * 60 * 1000, // 5 minutos auto-refresh
+        refetchInterval: 5 * 60 * 1000,
     });
 
-    // Contadores
+    const { data: vendasHoje } = useQuery<VendaInfo[]>({
+        queryKey: ['vendas-hoje'],
+        queryFn: () => vendasService.getVendasHoje() as Promise<VendaInfo[]>,
+        refetchInterval: 1 * 60 * 1000,
+    });
+
+    // Contadores e Cálculos
     const qtyProdutos = produtos?.length || 0;
     const qtyAlertas = alertas?.length || 0;
+    const totalFaturamento = (vendasHoje || []).reduce((acc: number, v: VendaInfo) => acc + Number(v.total), 0);
+    const qtyVendas = vendasHoje?.length || 0;
 
     const stats = [
-        { title: 'Vendas Hoje', value: 'R$ 1.250,00', color: '#4CAF50', icon: <ShoppingCart size={24} color="#4CAF50"/> },
-        { title: 'Produtos em Estoque', value: qtyProdutos.toString(), color: '#2196F3', icon: <PackageOpen size={24} color="#2196F3"/> },
-        { title: 'Novos Clientes', value: '12', color: '#9C27B0', icon: <Users size={24} color="#9C27B0"/> },
-        { title: 'Alertas de Estoque', value: qtyAlertas.toString(), color: '#F44336', icon: <AlertTriangle size={24} color="#F44336"/> },
+        { 
+            title: 'Faturamento Hoje', 
+            value: `R$ ${totalFaturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 
+            color: '#10b981', 
+            icon: <TrendingUp size={24} color="#10b981"/> 
+        },
+        { 
+            title: 'Vendas Realizadas', 
+            value: qtyVendas.toString(), 
+            color: '#6366f1', 
+            icon: <ShoppingCart size={24} color="#6366f1"/> 
+        },
+        { 
+            title: 'Produtos em Estoque', 
+            value: qtyProdutos.toString(), 
+            color: '#2196F3', 
+            icon: <PackageOpen size={24} color="#2196F3"/> 
+        },
+        { 
+            title: 'Alertas de Estoque', 
+            value: qtyAlertas.toString(), 
+            color: '#ef4444', 
+            icon: <AlertTriangle size={24} color="#ef4444"/> 
+        },
     ];
 
     const top5Alertas = alertas?.slice(0, 5) || [];
@@ -80,7 +114,9 @@ const Dashboard = () => {
                 <div className="quick-actions box">
                     <h2>Ações Rápidas</h2>
                     <div className="actions-grid">
-                        <button className="action-btn" onClick={() => navigate('/erp/vendas/nova')}>Nova Venda</button>
+                        <button className="action-btn primary" onClick={() => navigate('/erp/pdv')}>
+                            <HandCoins size={18} /> Abrir PDV
+                        </button>
                         <button className="action-btn" onClick={() => navigate('/erp/produtos')}>Gerenciar Produtos</button>
                         <button className="action-btn" onClick={() => navigate('/erp/estoque')}>Ajustar Estoque</button>
                     </div>

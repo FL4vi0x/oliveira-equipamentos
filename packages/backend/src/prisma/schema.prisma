@@ -142,6 +142,8 @@ model Venda {
   cliente         Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
   usuario         Usuario        @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
   itens           ItemVenda[]
+  caixaId         String?        @map("caixa_id")
+  caixa           CaixaRegistro? @relation(fields: [caixaId], references: [id], onDelete: Restrict)
 
   @@map("vendas")
 }
@@ -181,6 +183,33 @@ enum StatusVenda {
 }
 
 //
+// ==================== CAIXA / PDV ====================
+//
+model CaixaRegistro {
+  id              String         @id @default(uuid())
+  usuarioId       String         @map("usuario_id")
+  status          StatusCaixa    @default(ABERTO)
+  
+  saldoAbertura   Decimal        @default(0) @map("saldo_abertura") @db.Decimal(10, 2)
+  saldoFechamento Decimal?       @map("saldo_fechamento") @db.Decimal(10, 2)
+  totalVendas     Decimal        @default(0) @map("total_vendas") @db.Decimal(10, 2)
+  
+  dataAbertura    DateTime       @default(now()) @map("data_abertura")
+  dataFechamento  DateTime?      @map("data_fechamento")
+  observacoes     String?
+
+  usuario         Usuario        @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+  vendas          Venda[]
+
+  @@map("caixas_registro")
+}
+
+enum StatusCaixa {
+  ABERTO
+  FECHADO
+}
+
+//
 // ==================== USUÁRIOS ====================
 //
 model Usuario {
@@ -198,6 +227,7 @@ model Usuario {
 
   movimentacoes MovimentacaoEstoque[]
   vendas        Venda[]
+  caixas        CaixaRegistro[]
 
   @@map("usuarios")
 }
