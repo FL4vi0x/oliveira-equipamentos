@@ -1,8 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import { estoqueService } from '../../services/estoque.service';
 import { vendasService } from '../../services/vendas.service';
-import { AlertTriangle, PackageOpen, ShoppingCart, TrendingUp, HandCoins } from 'lucide-react';
+import { TrendingUp, ShoppingCart, Package, AlertTriangle } from 'lucide-react';
+import { StatCard } from './components/dashboard/StatCard';
+import { SalesOverviewCard } from './components/dashboard/SalesOverviewCard';
+import { QuickActionsCard } from './components/dashboard/QuickActionsCard';
+import { StockAlertsCard } from './components/dashboard/StockAlertsCard';
+import { RecentActivityCard } from './components/dashboard/RecentActivityCard';
 import './Dashboard.css';
 
 interface VendaInfo {
@@ -12,8 +16,6 @@ interface VendaInfo {
 }
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-
     const { data: produtos } = useQuery({
         queryKey: ['produtos-estoque'],
         queryFn: () => estoqueService.getAllProdutos(),
@@ -37,89 +39,60 @@ const Dashboard = () => {
     const totalFaturamento = (vendasHoje || []).reduce((acc: number, v: VendaInfo) => acc + Number(v.total), 0);
     const qtyVendas = vendasHoje?.length || 0;
 
-    const stats = [
-        { 
-            title: 'Faturamento Hoje', 
-            value: `R$ ${totalFaturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 
-            color: '#10b981', 
-            icon: <TrendingUp size={24} color="#10b981"/> 
-        },
-        { 
-            title: 'Vendas Realizadas', 
-            value: qtyVendas.toString(), 
-            color: '#6366f1', 
-            icon: <ShoppingCart size={24} color="#6366f1"/> 
-        },
-        { 
-            title: 'Produtos em Estoque', 
-            value: qtyProdutos.toString(), 
-            color: '#2196F3', 
-            icon: <PackageOpen size={24} color="#2196F3"/> 
-        },
-        { 
-            title: 'Alertas de Estoque', 
-            value: qtyAlertas.toString(), 
-            color: '#ef4444', 
-            icon: <AlertTriangle size={24} color="#ef4444"/> 
-        },
-    ];
-
-    const top5Alertas = alertas?.slice(0, 5) || [];
+    const stockAlerts = (alertas || []).slice(0, 3).map(a => ({
+        id: a.id,
+        nome: a.nome,
+        sku: a.codigoInterno || 'N/A',
+        quantidade: a.estoqueAtual,
+        minimo: a.estoqueMinimo,
+        criticidade: (a.criticidade === 'CRITICO' ? 'CRITICO' : 'ATENÇÃO') as 'CRITICO' | 'ATENÇÃO'
+    }));
 
     return (
-        <div className="dashboard-container">
-            <div className="stats-grid">
-                {stats.map((stat, index) => (
-                    <div key={index} className="stat-card" style={{ borderLeft: `4px solid ${stat.color}` }}>
-                        <div className="stat-icon-wrapper" style={{background: `${stat.color}15`, padding: '12px', borderRadius: '50%'}}>
-                            {stat.icon}
-                        </div>
-                        <div className="stat-info">
-                            <h3>{stat.title}</h3>
-                            <p className="stat-value">{stat.value}</p>
-                        </div>
-                    </div>
-                ))}
+        <div className="dashboard-wrapper">
+            <div className="stats-header-grid">
+                <StatCard 
+                    title="Faturamento Hoje"
+                    value={`R$ ${totalFaturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                    trend={{ value: '+15.2% vs ontem', isUp: true }}
+                    icon={<TrendingUp size={20} />}
+                    iconBgColor="#eff6ff"
+                    iconColor="#3b82f6"
+                />
+                <StatCard 
+                    title="Vendas Realizadas"
+                    value={qtyVendas.toString()}
+                    trend={{ value: '+4 vs ontem', isUp: true }}
+                    icon={<ShoppingCart size={20} />}
+                    iconBgColor="#ecfdf5"
+                    iconColor="#10b981"
+                />
+                <StatCard 
+                    title="Produtos em Estoque"
+                    value={qtyProdutos.toLocaleString('pt-BR')}
+                    trend={{ value: 'Estável', isUp: true }}
+                    icon={<Package size={20} />}
+                    iconBgColor="#f5f3ff"
+                    iconColor="#8b5cf6"
+                />
+                <StatCard 
+                    title="Alertas de Estoque"
+                    value={qtyAlertas.toString()}
+                    trend={{ value: '-2 vs semana passada', isUp: false }}
+                    icon={<AlertTriangle size={20} />}
+                    iconBgColor="#fffbeb"
+                    iconColor="#f59e0b"
+                />
             </div>
 
-            <div className="dashboard-content">
-                <div className="recent-activity box">
-                    <div className="box-header-flex">
-                        <h2><AlertTriangle size={20} className="text-red mr-2" style={{display: 'inline', marginBottom:'-4px'}}/> Alertas Críticos de Estoque</h2>
-                        <button className="btn-link" onClick={() => navigate('/erp/estoque')}>Ver Todos</button>
-                    </div>
-                    
-                    {top5Alertas.length === 0 ? (
-                        <div className="empty-alert">
-                            <p className="text-muted">Nenhum produto com estoque crítico.</p>
-                        </div>
-                    ) : (
-                        <ul className="alert-list">
-                            {top5Alertas.map(a => (
-                                <li key={a.id} className={`alert-item ${a.criticidade === 'CRITICO' ? 'is-critical' : 'is-warning'}`}>
-                                    <div className="alert-details">
-                                        <strong>{a.nome}</strong>
-                                        <span className="text-muted text-sm">Cód: {a.codigoInterno}</span>
-                                    </div>
-                                    <div className="alert-amount">
-                                        <span className="current-stock">{a.estoqueAtual}</span>
-                                        <span className="min-stock">/ min: {a.estoqueMinimo}</span>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+            <div className="dashboard-main-grid">
+                <div className="grid-left-column">
+                    <SalesOverviewCard />
+                    <StockAlertsCard alerts={stockAlerts} />
                 </div>
-
-                <div className="quick-actions box">
-                    <h2>Ações Rápidas</h2>
-                    <div className="actions-grid">
-                        <button className="action-btn primary" onClick={() => navigate('/erp/pdv')}>
-                            <HandCoins size={18} /> Abrir PDV
-                        </button>
-                        <button className="action-btn" onClick={() => navigate('/erp/produtos')}>Gerenciar Produtos</button>
-                        <button className="action-btn" onClick={() => navigate('/erp/estoque')}>Ajustar Estoque</button>
-                    </div>
+                <div className="grid-right-column">
+                    <QuickActionsCard />
+                    <RecentActivityCard />
                 </div>
             </div>
         </div>
