@@ -2,9 +2,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background-color: #cbd5e1;
-  color: #1e293b;
+  border-radius: var(--radius-full);
+  background-color: var(--color-neutral-300);
+  color: var(--color-neutral-800);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -12,19 +12,19 @@
 .avatar-size-sm {
   width: 32px;
   height: 32px;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .avatar-size-md {
   width: 40px;
   height: 40px;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
 }
 
 .avatar-size-lg {
   width: 48px;
   height: 48px;
-  font-size: 1.125rem;
+  font-size: var(--font-size-md);
 }
 
 .avatar-img {
@@ -34,6 +34,6 @@
 }
 
 .avatar-initials {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
 }

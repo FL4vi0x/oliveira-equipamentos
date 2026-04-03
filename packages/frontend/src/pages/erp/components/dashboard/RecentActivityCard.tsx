@@ -21,7 +21,7 @@ export const RecentActivityCard: React.FC = () => {
       title: 'Venda PDV #1042',
       time: 'Há 5 min',
       value: 'R$ 150,00',
-      icon: <ShoppingCart size={16} color="#3b82f6" />
+      icon: <ShoppingCart size={16} color="var(--color-primary-500)" />
     },
     {
       id: '2',
@@ -29,7 +29,7 @@ export const RecentActivityCard: React.FC = () => {
       title: 'Entrada de Estoque',
       time: 'Há 32 min',
       value: '+50 itens',
-      icon: <Package size={16} color="#c084fc" />
+      icon: <Package size={16} color="var(--color-primary-500)" />
     },
     {
       id: '3',
@@ -37,7 +37,7 @@ export const RecentActivityCard: React.FC = () => {
       title: 'Venda PDV #1041',
       time: 'Há 1 hora',
       value: 'R$ 480,50',
-      icon: <ShoppingCart size={16} color="#3b82f6" />
+      icon: <ShoppingCart size={16} color="var(--color-primary-500)" />
     }
   ];
 
