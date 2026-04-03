@@ -1,5 +1,19 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { 
+  LayoutDashboard, 
+  Package, 
+  Tags, 
+  CircleDollarSign, 
+  Users, 
+  ClipboardList, 
+  ShoppingCart, 
+  Settings, 
+  LogOut,
+  Bell,
+  ChevronDown
+} from 'lucide-react';
+import { Avatar } from '../ui/Avatar';
 import './Layout.css';
 
 const Layout = () => {
@@ -17,58 +31,89 @@ const Layout = () => {
   return (
     <div className="layout">
       <aside className="sidebar">
-        <div className="logo">
-          <h2>Oliveira Equipamentos</h2>
+        <div className="logo-container">
+          <div className="logo-icon">
+            <LayoutDashboard size={24} color="#3b82f6" />
+          </div>
+          <div className="logo-text">
+            <span className="logo-suite">ERP SUITE</span>
+            <span className="logo-name">Oliveira Equipamentos</span>
+          </div>
         </div>
 
         <nav className="menu">
-          <Link
-            to="/erp/dashboard"
-            className={isActive('/erp/dashboard') ? 'active' : ''}
-          >
-            📊 Dashboard
-          </Link>
+          <div className="menu-group">
+            <div className="menu-section">PRINCIPAL</div>
+            <Link
+              to="/erp/dashboard"
+              className={`menu-item ${isActive('/erp/dashboard') ? 'active' : ''}`}
+            >
+              <LayoutDashboard size={18} />
+              <span>Dashboard</span>
+            </Link>
+          </div>
 
-          <div className="menu-section">ERP</div>
-          <Link
-            to="/erp/produtos"
-            className={isActive('/erp/produtos') ? 'active' : ''}
-          >
-            📦 Produtos
-          </Link>
-          <Link
-            to="/erp/categorias"
-            className={isActive('/erp/categorias') ? 'active' : ''}
-          >
-            🏷️ Categorias
-          </Link>
-          <Link
-            to="/erp/vendas"
-            className={isActive('/erp/vendas') ? 'active' : ''}
-          >
-            💰 Vendas
-          </Link>
-          <Link
-            to="/erp/clientes"
-            className={isActive('/erp/clientes') ? 'active' : ''}
-          >
-            👥 Clientes
-          </Link>
-          <Link
-            to="/erp/estoque"
-            className={isActive('/erp/estoque') ? 'active' : ''}
-          >
-            📋 Estoque
-          </Link>
+          <div className="menu-group">
+            <div className="menu-section">ERP</div>
+            <Link
+              to="/erp/produtos"
+              className={`menu-item ${isActive('/erp/produtos') ? 'active' : ''}`}
+            >
+              <Package size={18} />
+              <span>Produtos</span>
+            </Link>
+            <Link
+              to="/erp/categorias"
+              className={`menu-item ${isActive('/erp/categorias') ? 'active' : ''}`}
+            >
+              <Tags size={18} />
+              <span>Categorias</span>
+            </Link>
+            <Link
+              to="/erp/vendas"
+              className={`menu-item ${isActive('/erp/vendas') ? 'active' : ''}`}
+            >
+              <CircleDollarSign size={18} />
+              <span>Vendas</span>
+            </Link>
+            <Link
+              to="/erp/clientes"
+              className={`menu-item ${isActive('/erp/clientes') ? 'active' : ''}`}
+            >
+              <Users size={18} />
+              <span>Clientes</span>
+            </Link>
+            <Link
+              to="/erp/estoque"
+              className={`menu-item ${isActive('/erp/estoque') ? 'active' : ''}`}
+            >
+              <ClipboardList size={18} />
+              <span>Estoque</span>
+            </Link>
+          </div>
 
-          <div className="menu-section">PDV</div>
-          <Link
-            to="/erp/pdv"
-            className={isActive('/erp/pdv') ? 'active' : ''}
-          >
-            🛒 Frente de Caixa
-          </Link>
+          <div className="menu-group">
+            <div className="menu-section">PDV</div>
+            <Link
+              to="/erp/pdv"
+              className={`menu-item ${isActive('/erp/pdv') ? 'active' : ''}`}
+            >
+              <ShoppingCart size={18} />
+              <span>Frente de Caixa</span>
+            </Link>
+          </div>
         </nav>
+
+        <div className="sidebar-footer">
+          <Link to="/erp/configuracoes" className="footer-link">
+            <Settings size={18} />
+            <span>Configurações</span>
+          </Link>
+          <button onClick={handleLogout} className="footer-link logout">
+            <LogOut size={18} />
+            <span>Sair do Sistema</span>
+          </button>
+        </div>
       </aside>
 
       <main className="main-content">
@@ -77,13 +122,24 @@ const Layout = () => {
             <h1>{getPageTitle(location.pathname)}</h1>
           </div>
           <div className="header-right">
-            <div className="user-info">
-              <span className="user-name">👤 {user?.nome || 'Usuário'}</span>
-              <span className="user-profile">{user?.perfil}</span>
+            <div className="header-date">
+              <ClipboardList size={16} />
+              <span>{new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' }).format(new Date())}</span>
             </div>
-            <button onClick={handleLogout} className="logout-button">
-              Sair
+            
+            <button className="notification-btn">
+              <Bell size={20} />
+              <span className="notification-badge"></span>
             </button>
+
+            <div className="user-profile-dropdown">
+              <Avatar size="sm" initials={user?.nome?.substring(0, 2).toUpperCase() || 'U'} />
+              <div className="user-info-text">
+                <span className="user-name">{user?.nome || 'Administrador'}</span>
+                <span className="user-role">{user?.perfil || 'ADMIN'}</span>
+              </div>
+              <ChevronDown size={14} className="dropdown-icon" />
+            </div>
           </div>
         </header>
 
