@@ -70,11 +70,17 @@ const getToken = () => localStorage.getItem('token');
 
 // API wrapper que escolhe entre Electron IPC ou Axios
 export const api = {
-  async electronRequest<T>(method: 'GET'|'POST'|'PUT'|'PATCH'|'DELETE', endpoint: string, data?: unknown, params?: Record<string, string>): Promise<T> {
+  async electronRequest<T>(method: 'GET'|'POST'|'PUT'|'PATCH'|'DELETE', endpoint: string, data?: unknown, params?: Record<string, string | number | boolean | undefined>): Promise<T> {
     try {
+      const queryParams = params ? new URLSearchParams(
+        Object.entries(params)
+          .filter(([, v]) => v !== undefined)
+          .map(([k, v]) => [k, String(v)])
+      ).toString() : '';
+      
       return await window.electronAPI.apiRequest({
         method,
-        endpoint: params ? `${endpoint}?${new URLSearchParams(params).toString()}` : endpoint,
+        endpoint: queryParams ? `${endpoint}?${queryParams}` : endpoint,
         data,
         token: getToken() || undefined,
       });
@@ -91,7 +97,7 @@ export const api = {
     }
   },
 
-  async get<T>(endpoint: string, config?: { params?: Record<string, string> }): Promise<T> {
+  async get<T>(endpoint: string, config?: { params?: Record<string, string | number | boolean | undefined> }): Promise<T> {
     if (isElectron()) return this.electronRequest<T>('GET', endpoint, undefined, config?.params);
     const response = await axiosClient.get<T>(endpoint, config);
     return response.data;

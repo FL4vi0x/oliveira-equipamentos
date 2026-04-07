@@ -156,10 +156,10 @@ function getPageTitle(path: string): string {
     '/erp/dashboard': 'Dashboard',
     '/erp/produtos': 'Gestão de Produtos',
     '/erp/categorias': 'Categorias de Produtos',
-    '/erp/vendas': 'Vendas',
+    '/erp/vendas': 'Gestão de Vendas',
     '/erp/clientes': 'Clientes',
     '/erp/estoque': 'Controle de Estoque',
-    '/pdv': 'Ponto de Venda',
+    '/erp/pdv': 'Ponto de Venda',
   };
   return titles[path] || 'Oliveira Equipamentos';
 }
