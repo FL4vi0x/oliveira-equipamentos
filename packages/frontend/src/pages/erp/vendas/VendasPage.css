@@ -1,0 +1,78 @@
+.vendas-page {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vendas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-info h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin-bottom: 0.5rem;
+}
+
+.header-info p {
+  color: var(--color-slate-500);
+  font-size: 0.95rem;
+}
+
+.vendas-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.table-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subcomponents common styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-concluida {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.badge-pendente {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.badge-cancelada {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.badge-orcamento {
+  background: #eff6ff;
+  color: #2563eb;
+}

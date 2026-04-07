@@ -1,0 +1,73 @@
+.vendas-filters {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--color-slate-200);
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 280px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-slate-100);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-slate-200);
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-icon {
+  color: var(--color-slate-400);
+}
+
+.date-input {
+  background: transparent;
+  border: none;
+  font-size: 0.875rem;
+  color: var(--color-slate-700);
+  padding: 0.4rem 0.2rem;
+  outline: none;
+}
+
+.separator {
+  color: var(--color-slate-400);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin: 0 0.25rem;
+}
+
+.status-select {
+  padding: 0.6rem 2rem 0.6rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-slate-200);
+  background: white;
+  color: var(--color-slate-700);
+  font-size: 0.875rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+.status-select:focus {
+  outline: 2px solid var(--color-blue-100);
+  border-color: var(--color-blue-500);
+}
