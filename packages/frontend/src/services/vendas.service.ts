@@ -23,6 +23,7 @@ export interface VendaInput {
 }
 
 export interface FilterVendaParams {
+  [key: string]: string | number | boolean | undefined;
   page?: number;
   limit?: number;
   search?: string;
