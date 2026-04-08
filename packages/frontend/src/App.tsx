@@ -10,6 +10,7 @@ import CategoriasPage from './pages/erp/categorias/CategoriasPage';
 import ClientesPage from './pages/erp/clientes/ClientesPage';
 import { EstoquePage } from './pages/erp/estoque/EstoquePage';
 import { PDVPage } from './pages/erp/vendas/PDVPage';
+import VendasPage from './pages/erp/vendas/VendasPage';
 import Login from './pages/Login';
 import './styles/global.css';
 
@@ -41,6 +42,7 @@ function App() {
                   <Route path="clientes" element={<ClientesPage />} />
                   <Route path="estoque" element={<EstoquePage />} />
                   <Route path="pdv" element={<PDVPage />} />
+                  <Route path="vendas" element={<VendasPage />} />
                   {/* Adicionar mais rotas ERP aqui */}
                 </Route>
               </Route>

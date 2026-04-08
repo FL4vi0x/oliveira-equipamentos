@@ -1,0 +1,59 @@
+.vendas-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-blue { background: #eff6ff; color: #2563eb; }
+.bg-emerald { background: #ecfdf5; color: #059669; }
+.bg-indigo { background: #eef2ff; color: #4f46e5; }
+.bg-red { background: #fef2f2; color: #dc2626; }
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-slate-500);
+}
+
+.card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin: 0.25rem 0;
+}
+
+.card-desc {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}

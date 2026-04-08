@@ -132,7 +132,6 @@ model Venda {
   desconto        Decimal        @default(0) @db.Decimal(10, 2)
   total           Decimal        @db.Decimal(10, 2)
 
-  formaPagamento  FormaPagamento @map("forma_pagamento")
   status          StatusVenda    @default(CONCLUIDA)
   observacoes     String?
 
@@ -142,6 +141,7 @@ model Venda {
   cliente         Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
   usuario         Usuario        @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
   itens           ItemVenda[]
+  pagamentos      PagamentoVenda[]
   caixaId         String?        @map("caixa_id")
   caixa           CaixaRegistro? @relation(fields: [caixaId], references: [id], onDelete: Restrict)
 
@@ -178,8 +178,21 @@ enum FormaPagamento {
 
 enum StatusVenda {
   PENDENTE
+  ORCAMENTO
   CONCLUIDA
   CANCELADA
+}
+
+model PagamentoVenda {
+  id              String         @id @default(uuid())
+  vendaId         String         @map("venda_id")
+  formaPagamento  FormaPagamento @map("forma_pagamento")
+  valor           Decimal        @db.Decimal(10, 2)
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  venda           Venda          @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  @@map("pagamentos_venda")
 }
 
 //

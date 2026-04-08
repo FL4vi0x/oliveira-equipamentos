@@ -11,7 +11,7 @@ import type { CartItemData } from './components/CartList';
 import { ProductSearch } from './components/ProductSearch';
 import { SummaryPanel } from './components/SummaryPanel';
 import { ActionButtons } from './components/ActionButtons';
-import type { FormaPagamento } from '../../../../../shared/types/estoque.types';
+import { type FormaPagamento, FormaPagamento as FPValue } from '../../../../../shared/types/venda.types';
 import './PDVPage.css';
 
 interface CaixaInfo {
@@ -103,7 +103,10 @@ export const PDVPage = () => {
   // ── Mutação: Finalizar Venda ─────────────────────────────────
   const { mutate: finalize, isPending } = useMutation({
     mutationFn: (forma: FormaPagamento) => vendasService.finalizarVenda({
-      formaPagamento: forma,
+      pagamentos: [{
+        formaPagamento: forma,
+        valor: subtotal,
+      }],
       itens: cart.map(item => ({
         produtoId: item.id,
         quantidade: item.quantidade,
@@ -222,15 +225,15 @@ export const PDVPage = () => {
               </p>
             </div>
             <div className="pay-modal-grid">
-              <button className="pay-modal-btn" onClick={() => finalize('DINHEIRO')} disabled={isPending}>
+              <button className="pay-modal-btn" onClick={() => finalize(FPValue.DINHEIRO)} disabled={isPending}>
                 <Banknote size={36} className="pay-modal-icon pay-modal-icon--green" />
                 <span>Dinheiro</span>
               </button>
-              <button className="pay-modal-btn" onClick={() => finalize('CARTAO_CREDITO')} disabled={isPending}>
+              <button className="pay-modal-btn" onClick={() => finalize(FPValue.CARTAO_CREDITO)} disabled={isPending}>
                 <CreditCard size={36} className="pay-modal-icon pay-modal-icon--blue" />
                 <span>Cartão</span>
               </button>
-              <button className="pay-modal-btn" onClick={() => finalize('PIX')} disabled={isPending}>
+              <button className="pay-modal-btn" onClick={() => finalize(FPValue.PIX)} disabled={isPending}>
                 <QrCode size={36} className="pay-modal-icon pay-modal-icon--teal" />
                 <span>PIX</span>
               </button>

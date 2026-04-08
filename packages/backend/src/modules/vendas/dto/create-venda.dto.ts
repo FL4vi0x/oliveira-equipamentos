@@ -10,7 +10,17 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { FormaPagamento } from '@prisma/client';
+import { FormaPagamento, StatusVenda } from '@prisma/client';
+
+export class PagamentoVendaDto {
+  @IsEnum(FormaPagamento, { message: 'Forma de pagamento inválida' })
+  @IsNotEmpty({ message: 'Forma de pagamento é obrigatória' })
+  formaPagamento: FormaPagamento;
+
+  @IsNumber({}, { message: 'Valor deve ser um número' })
+  @Min(0.01, { message: 'Valor mínimo é 0.01' })
+  valor: number;
+}
 
 export class ItemVendaDto {
   @IsUUID('4', { message: 'ID do produto inválido' })
@@ -35,9 +45,15 @@ export class CreateVendaDto {
   @IsOptional()
   clienteId?: string;
 
-  @IsEnum(FormaPagamento, { message: 'Forma de pagamento inválida' })
-  @IsNotEmpty({ message: 'Forma de pagamento é obrigatória' })
-  formaPagamento: FormaPagamento;
+  @IsEnum(StatusVenda, { message: 'Status de venda inválido' })
+  @IsOptional()
+  status?: StatusVenda;
+
+  @IsArray({ message: 'Pagamentos devem ser uma lista' })
+  @IsNotEmpty({ message: 'Pelo menos uma forma de pagamento é obrigatória' })
+  @ValidateNested({ each: true })
+  @Type(() => PagamentoVendaDto)
+  pagamentos: PagamentoVendaDto[];
 
   @IsNumber({}, { message: 'Desconto total deve ser um número' })
   @IsOptional()
