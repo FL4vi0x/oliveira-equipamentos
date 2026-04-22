@@ -51,6 +51,7 @@ model Produto {
 
   movimentacoes   MovimentacaoEstoque[]
   itensVenda      ItemVenda[]
+  itensCompra     ItemCompra[]
 
   @@map("produtos")
 }
@@ -232,6 +233,7 @@ model Usuario {
   cpf          String         @unique
   senha        String
   perfil       PerfilUsuario
+  permissoes   String[]       @default([])
   ativo        Boolean        @default(true)
   refreshToken String?        @map("refresh_token")
 
@@ -241,6 +243,7 @@ model Usuario {
   movimentacoes MovimentacaoEstoque[]
   vendas        Venda[]
   caixas        CaixaRegistro[]
+  compras       Compra[]
 
   @@map("usuarios")
 }
@@ -250,4 +253,132 @@ enum PerfilUsuario {
   GERENTE
   VENDEDOR
   ESTOQUISTA
+}
+
+//
+// ==================== AUDITORIA ====================
+//
+model AuditLog {
+  id          String   @id @default(uuid())
+  acao        String   // CREATE, UPDATE, DELETE, etc
+  entidade    String   // Nome da tabela/entidade afetada
+  entidadeId  String?  @map("entidade_id")
+  usuarioId   String?  @map("usuario_id")
+  
+  payload     Json?    
+  oldPayload  Json?    @map("old_payload") 
+  
+  metodo      String?  
+  rota        String?
+  statusCode  Int?     @map("status_code")
+  ip          String?
+  userAgent   String?  @map("user_agent")
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}
+
+//
+// ==================== FORNECEDORES ====================
+//
+model Fornecedor {
+  id              String   @id @default(uuid())
+  nome            String
+  cnpjCpf         String   @unique @map("cnpj_cpf")
+  contato         String?
+  prazoPagamento  Int?     @map("prazo_pagamento")
+  ativo           Boolean  @default(true)
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  compras         Compra[]
+
+  @@map("fornecedores")
+}
+
+//
+// ==================== COMPRAS ====================
+//
+model Compra {
+  id              String         @id @default(uuid())
+  numero          Int            @unique @default(autoincrement())
+  fornecedorId    String         @map("fornecedor_id")
+  usuarioId       String         @map("usuario_id")
+  dataCompra      DateTime       @default(now()) @map("data_compra")
+  
+  total           Decimal        @db.Decimal(10, 2)
+  status          StatusCompra   @default(PENDENTE)
+  
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  fornecedor      Fornecedor     @relation(fields: [fornecedorId], references: [id], onDelete: Restrict)
+  usuario         Usuario        @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+  itens           ItemCompra[]
+
+  @@map("compras")
+}
+
+model ItemCompra {
+  id              String   @id @default(uuid())
+  compraId        String   @map("compra_id")
+  produtoId       String   @map("produto_id")
+  
+  quantidade      Decimal  @db.Decimal(10, 3)
+  precoUnitario   Decimal  @map("preco_unitario") @db.Decimal(10, 2)
+  total           Decimal  @db.Decimal(10, 2)
+
+  compra          Compra   @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  produto         Produto  @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+
+  @@map("itens_compra")
+}
+
+enum StatusCompra {
+  PENDENTE
+  CONCLUIDA
+  CANCELADA
+}
+
+//
+// ==================== FINANCEIRO ====================
+//
+model ContaPagar {
+  id              String         @id @default(uuid())
+  descricao       String
+  valor           Decimal        @db.Decimal(10, 2)
+  vencimento      DateTime
+  dataPagamento   DateTime?      @map("data_pagamento")
+  status          StatusConta    @default(PENDENTE)
+
+  compraId        String?        @map("compra_id")
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  @@map("contas_pagar")
+}
+
+model ContaReceber {
+  id              String         @id @default(uuid())
+  descricao       String
+  valor           Decimal        @db.Decimal(10, 2)
+  vencimento      DateTime
+  dataRecebimento DateTime?      @map("data_recebimento")
+  status          StatusConta    @default(PENDENTE)
+
+  vendaId         String?        @map("venda_id")
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  @@map("contas_receber")
+}
+
+enum StatusConta {
+  PENDENTE
+  PAGO
+  CANCELADO
 }
