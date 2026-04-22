@@ -200,8 +200,9 @@ export class ProdutosService {
     // Verificar se produto existe
     await this.findOne(id);
 
-    await this.prisma.produto.delete({
+    await this.prisma.produto.update({
       where: { id },
+      data: { ativo: false },
     });
 
     return { message: 'Produto removido com sucesso' };
