@@ -47,12 +47,26 @@ export class CaixaService {
       throw new BadRequestException('Caixa já está fechado');
     }
 
+    const vendasAggregation = await this.prisma.venda.aggregate({
+      where: {
+        caixaId,
+        status: 'CONCLUIDA',
+      },
+      _sum: {
+        total: true,
+      },
+    });
+
+    const totalVendas = Number(vendasAggregation._sum.total) || 0;
+    const saldoFechamento = Number(caixa.saldoAbertura) + totalVendas;
+
     return this.prisma.caixaRegistro.update({
       where: { id: caixaId },
       data: {
         status: 'FECHADO',
         dataFechamento: new Date(),
-        // TODO: Mudar subtotal de fechamento para bater com totalVendas
+        totalVendas,
+        saldoFechamento,
       },
     });
   }
