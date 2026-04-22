@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import * as bcrypt from 'bcrypt';
@@ -25,6 +29,10 @@ export class AuthService {
     const user = await this.validateUser(loginDto.login, loginDto.senha);
     if (!user) {
       throw new UnauthorizedException('Credenciais inválidas');
+    }
+
+    if (!user.ativo) {
+      throw new ForbiddenException('Usuário inativo. Contate o administrador.');
     }
 
     const payload = {
@@ -63,6 +71,12 @@ export class AuthService {
         !(await bcrypt.compare(refreshToken, user.refreshToken))
       ) {
         throw new UnauthorizedException('Refresh token inválido');
+      }
+
+      if (!user.ativo) {
+        throw new ForbiddenException(
+          'Usuário inativo. Contate o administrador.',
+        );
       }
 
       const newPayload = {
