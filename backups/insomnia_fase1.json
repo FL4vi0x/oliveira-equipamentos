@@ -1,0 +1,149 @@
+{
+	"_type": "export",
+	"__export_format": 4,
+	"__export_date": "2026-04-22T15:37:00.000Z",
+	"__export_source": "antigravity-ai",
+	"resources": [
+		{
+			"_id": "wrk_oliveira_erp",
+			"parentId": null,
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"name": "Oliveira ERP - Fase 1",
+			"description": "Coleção para testes de segurança e estabilidade",
+			"scope": "collection",
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_local",
+			"parentId": "wrk_oliveira_erp",
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"name": "Local",
+			"data": {
+				"baseUrl": "http://localhost:3001/api",
+				"token": "seu_token_aqui"
+			},
+			"color": null,
+			"isPrivate": false,
+			"metaSortKey": 1713793000000,
+			"_type": "environment"
+		},
+		{
+			"_id": "req_login",
+			"parentId": "wrk_oliveira_erp",
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"url": "{{baseUrl}}/auth/login",
+			"name": "Login",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"login\": \"admin@erp.com\",\n\t\"senha\": \"sua_senha\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1713793000000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_logout",
+			"parentId": "wrk_oliveira_erp",
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"url": "{{baseUrl}}/auth/logout",
+			"name": "Logout",
+			"description": "",
+			"method": "POST",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Authorization",
+					"value": "Bearer {{token}}"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1713792000000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_refresh",
+			"parentId": "wrk_oliveira_erp",
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"url": "{{baseUrl}}/auth/refresh",
+			"name": "Refresh Token",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"refresh_token\": \"seu_refresh_token\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1713791000000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_delete_prod",
+			"parentId": "wrk_oliveira_erp",
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"url": "{{baseUrl}}/produtos/ID_AQUI",
+			"name": "Delete Produto (Soft)",
+			"description": "",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Authorization",
+					"value": "Bearer {{token}}"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1713790000000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_fechar_caixa",
+			"parentId": "wrk_oliveira_erp",
+			"modified": 1713793000000,
+			"created": 1713793000000,
+			"url": "{{baseUrl}}/estoque/caixas/ID_AQUI/fechar",
+			"name": "Fechar Caixa",
+			"description": "",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Authorization",
+					"value": "Bearer {{token}}"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1713789000000,
+			"isPrivate": false,
+			"_type": "request"
+		}
+	]
+}
