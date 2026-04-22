@@ -77,7 +77,11 @@ export class AuthService {
         expiresIn: '7d',
       });
 
-      await this.usuariosService.updateRefreshToken(user.id, new_refresh_token);
+      const newRefreshTokenHash = await bcrypt.hash(new_refresh_token, 10);
+      await this.usuariosService.updateRefreshToken(
+        user.id,
+        newRefreshTokenHash,
+      );
 
       return {
         access_token,
@@ -86,5 +90,9 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Refresh token inválido');
     }
+  }
+
+  async logout(userId: string) {
+    await this.usuariosService.updateRefreshToken(userId, null);
   }
 }
