@@ -11,12 +11,15 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ProdutosService } from './produtos.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { FilterProdutoDto } from './dto/filter-produto.dto';
 
+@ApiTags('Produtos')
+@ApiBearerAuth()
 @Controller('produtos')
 @UseGuards(JwtAuthGuard)
 export class ProdutosController {

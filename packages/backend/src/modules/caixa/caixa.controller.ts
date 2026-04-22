@@ -8,10 +8,13 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CaixaService } from './caixa.service';
 import { AbrirCaixaDto } from './dto/abrir-caixa.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@ApiTags('Caixa PDV')
+@ApiBearerAuth()
 @Controller('estoque/caixas') // Mantendo padrão de rotas do ERP
 @UseGuards(JwtAuthGuard)
 export class CaixaController {
