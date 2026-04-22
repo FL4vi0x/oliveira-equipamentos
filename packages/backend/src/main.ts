@@ -1,14 +1,22 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
-  // CORS para Electron e Web
+  // Segurança com Helmet
+  app.use(helmet());
+
+  // CORS para Electron e Web configurável
+  const corsOrigins = configService.get<string[]>('CORS_ORIGINS');
+
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: corsOrigins,
     credentials: true,
   });
 
@@ -27,7 +35,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.BACKEND_PORT || 3001;
+  const port = configService.get<number>('BACKEND_PORT') || 3001;
   await app.listen(port);
 
   console.log(`🚀 Backend rodando em: http://localhost:${port}/api`);
