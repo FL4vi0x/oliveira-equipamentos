@@ -1,0 +1,75 @@
+<div class="page">
+  <!-- LOGO HORIZONTAL -->
+  <div style="margin-bottom:16px;">
+    {{#if logos.horizontal}}
+    <img src="{{logos.horizontal}}" alt="Oliveira Equipamentos" style="height:70px; max-width:280px; object-fit:contain; display:block;" />
+    {{else}}
+    <div style="font-size:11pt; font-weight:bold;">Oliveira Equipamentos</div>
+    {{/if}}
+  </div>
+
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="font-size: 24pt; letter-spacing: 5px; font-weight: bold; margin: 0;">TERMO DE ENTREGA</h1>
+  </div>
+
+  <div class="texto-juridico" style="font-size: 11pt; line-height: 1.5; margin-bottom: 20px;">
+    Declaro para os devidos fins legais e de direito que:
+  </div>
+
+  <!-- BOX CLIENTE -->
+  <div style="border: 1px solid #000; border-radius: 8px; padding: 15px; font-size: 10pt; line-height: 1.6; margin-bottom: 20px;">
+    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 5px;">
+      <strong>Cliente:</strong> <span>{{cliente.nome}}</span>
+      <strong>Endereço:</strong> <span>{{cliente.endereco}}, {{cliente.numero}}</span>
+      <strong>Bairro:</strong> <span>{{cliente.bairro}}</span>
+      <strong>Cidade:</strong> <span>{{cliente.cidade}}</span>
+      <strong>UF:</strong> <span>{{cliente.estado}}</span>
+      <strong>Telefone:</strong> <span>{{cliente.telefone}} / {{cliente.celular}}</span>
+      <strong>CPF/CNPJ:</strong> <span>{{cliente.cpfCnpj}}</span>
+    </div>
+  </div>
+
+  <div class="texto-juridico" style="font-size: 10pt; line-height: 1.5; text-align: justify;">
+    <p>
+      recebeu o(s) produto(s) disposto(s) no contrato de nº <strong>{{venda.numero}}</strong>, em perfeita(s) condição(es)
+      de uso, estando ciente o comprador acima qualificado das condições e prazo(s) de garantia,
+      com as observações da cláusula 7ª do contrato de compra e venda que deu origem a este instrumento.
+    </p>
+  </div>
+
+  <div style="text-align: right; margin-top: 30px; font-size: 11pt;">
+    {{empresa.cidade}}, {{formatDate geradoEm}}
+  </div>
+
+  <!-- ASSINATURAS -->
+  <div style="margin-top: 40mm; page-break-inside: avoid;">
+    <div style="display: flex; justify-content: space-between; gap: 40px;">
+      <div style="flex: 1; text-align: left;">
+        <p style="font-size: 9pt; margin-bottom: 25px;">VENDEDOR(A):</p>
+        <div style="border-top: 1px solid #000;"></div>
+        <p style="font-size: 8pt; font-weight: bold; margin-top: 2px;">{{empresa.nome}}</p>
+      </div>
+      <div style="flex: 1; text-align: left;">
+        <p style="font-size: 9pt; margin-bottom: 25px;">COMPRADOR(A):</p>
+        <div style="border-top: 1px solid #000;"></div>
+        <p style="font-size: 8pt; font-weight: bold; margin-top: 2px;">{{cliente.nome}}</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+      <p style="font-size: 9pt; margin-bottom: 5px;">TESTEMUNHAS:</p>
+      <div style="display: flex; justify-content: space-between; gap: 40px;">
+        <div style="flex: 1;">
+          <div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+          <p style="font-size: 8pt; margin-top: 2px;">Nome: ___________________________________</p>
+          <p style="font-size: 8pt;">CPF: ____________________________________</p>
+        </div>
+        <div style="flex: 1;">
+          <div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+          <p style="font-size: 8pt; margin-top: 2px;">Nome: ___________________________________</p>
+          <p style="font-size: 8pt;">CPF: ____________________________________</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
