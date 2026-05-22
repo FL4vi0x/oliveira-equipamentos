@@ -15,7 +15,7 @@ interface VendaDetailsModalProps {
 const VendaDetailsModal: React.FC<VendaDetailsModalProps> = ({ vendaId, onClose }) => {
   const { data: venda, isLoading } = useQuery<Venda>({
     queryKey: ['venda', vendaId],
-    queryFn: () => vendasService.getById(vendaId).then((res) => (res as { data: Venda }).data),
+    queryFn: () => vendasService.getById(vendaId) as Promise<Venda>,
   });
 
   if (isLoading) return null;
