@@ -47,6 +47,12 @@
   flex-direction: column;
 }
 
+/* Filtros não precisam de fundo ou borda própria - herdam do card */
+.table-card .vendas-filters {
+  background: transparent;
+  border-bottom: 1px solid var(--border-default);
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .vendas-page {

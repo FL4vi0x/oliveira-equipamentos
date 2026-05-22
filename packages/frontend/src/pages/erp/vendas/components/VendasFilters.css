@@ -1,6 +1,6 @@
 .vendas-filters {
-  padding: 1.25rem;
-  border-bottom: 1px solid var(--color-slate-200);
+  padding: var(--space-4);
+  background: transparent;
 }
 
 .search-form {
