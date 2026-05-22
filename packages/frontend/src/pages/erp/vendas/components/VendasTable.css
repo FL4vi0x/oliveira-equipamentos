@@ -1,144 +1,138 @@
+/* 
+  ========================================
+  VENDAS TABLE / DATA TABLE STYLES
+  Padrão reutilizável para tabelas de dados
+  ========================================
+*/
+
 .table-wrapper {
   overflow-x: auto;
   border-bottom-left-radius: var(--radius-lg);
   border-bottom-right-radius: var(--radius-lg);
 }
 
-.table-loading {
-  padding: 4rem;
-  text-align: center;
-  color: var(--color-slate-500);
-}
-
+.table-loading,
 .table-empty {
-  padding: 4rem;
+  padding: var(--space-16);
   text-align: center;
-  color: var(--color-slate-500);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 
-.vendas-table {
+/* ========================================
+   DATA TABLE - Padrão Reutilizável
+   ======================================== */
+
+.data-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.vendas-table th {
-  background: var(--color-slate-50);
-  border-bottom: 1px solid var(--color-slate-200);
-  padding: 0.825rem 1rem;
+.data-table th {
+  background: var(--color-neutral-50);
+  border-bottom: 1px solid var(--border-default);
+  padding: var(--space-3) var(--space-4);
   text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  color: var(--color-slate-500);
+  color: var(--text-secondary);
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
-.vendas-table td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--color-slate-100);
-  font-size: 0.875rem;
-  color: var(--color-slate-700);
-  transition: background-color 0.15s;
+.data-table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  vertical-align: middle;
 }
 
-.vendas-table tr:last-child td {
+.data-table tr:last-child td {
   border-bottom: none;
 }
 
-.vendas-table tr:hover td {
-  background: var(--color-slate-50);
+.data-table tr:hover td {
+  background: var(--color-neutral-50);
 }
 
-.font-bold {
-  font-weight: 600;
-  color: var(--color-slate-900);
-}
-
-.text-right {
+/* Coluna de Ações */
+.col-actions {
   text-align: right;
+  white-space: nowrap;
+  width: 1%;
 }
 
-.cliente-info {
+/* Células especiais */
+.cell-bold {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+}
+
+.cell-stacked {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-.cliente-nome {
-  font-weight: 500;
-  color: var(--color-slate-700);
+.cell-primary {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
 }
 
-.cliente-doc {
-  font-size: 0.7rem;
-  color: var(--color-slate-400);
+.cell-secondary {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
 }
 
-.actions-cell {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
+/* ========================================
+   PAGINATION
+   ======================================== */
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.625rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-}
-
-/* Status Badges */
-.badge-concluida { background: #ecfdf5; color: #059669; }
-.badge-pendente { background: #fffbeb; color: #d97706; }
-.badge-cancelada { background: #fef2f2; color: #dc2626; }
-.badge-orcamento { background: #eff6ff; color: #2563eb; }
-
-/* Pagination Styling */
 .pagination {
-  padding: 1rem 1.5rem;
-  background: var(--color-white);
-  border-top: 1px solid var(--color-slate-200);
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-default);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .pagination-info {
-  font-size: 0.875rem;
-  color: var(--color-slate-500);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
 }
 
 .pagination-info b {
-  color: var(--color-slate-900);
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-semibold);
 }
 
 .pagination-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .pagination-btn {
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-slate-200);
-  background: white;
-  color: var(--color-slate-600);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .pagination-btn:hover:not(:disabled) {
-  border-color: var(--color-blue-500);
-  color: var(--color-blue-600);
-  background: var(--color-blue-50);
+  border-color: var(--color-primary-500);
+  color: var(--color-primary-600);
+  background: var(--color-primary-50);
 }
 
 .pagination-btn:disabled {
@@ -147,7 +141,25 @@
 }
 
 .page-current {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-slate-900);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  min-width: 24px;
+  text-align: center;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .data-table th,
+  .data-table td {
+    padding: var(--space-3);
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
 }

@@ -49,6 +49,11 @@
   --color-danger-600:  #dc2626;
   --color-danger-700:  #b91c1c;
 
+  /* Semantic - Info (Blue) - alias for primary */
+  --color-info-50:     var(--color-primary-50);
+  --color-info-100:    var(--color-primary-100);
+  --color-info-600:    var(--color-primary-600);
+
   /* Neutrals / Slate */
   --color-neutral-50:  #f8fafc; /* Main App Bg */
   --color-neutral-100: #f1f5f9; /* Subtle borders/bg */

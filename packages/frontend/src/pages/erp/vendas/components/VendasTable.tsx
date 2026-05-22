@@ -1,7 +1,9 @@
 import React from 'react';
 import { Eye, Trash2, ChevronLeft, ChevronRight, Printer, FileText } from 'lucide-react';
 import { formatCurrency, formatDate } from '../../../../utils/format.ts';
-import { Button } from '../../../../components/ui/Button.tsx';
+import { IconButton } from '../../../../components/ui/IconButton.tsx';
+import { ActionGroup } from '../../../../components/ui/ActionGroup.tsx';
+import { StatusBadge } from '../../../../components/ui/StatusBadge.tsx';
 import { type Venda, StatusVenda } from '../../../../../../shared/types/venda.types.ts';
 import './VendasTable.css';
 
@@ -19,6 +21,13 @@ interface VendasTableProps {
   onCancel: (id: string) => void;
   onGerarDocumentos: (id: string) => void;
 }
+
+const statusConfig: Record<StatusVenda, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' }> = {
+  [StatusVenda.CONCLUIDA]: { label: 'Concluída', variant: 'success' },
+  [StatusVenda.PENDENTE]: { label: 'Pendente', variant: 'warning' },
+  [StatusVenda.ORCAMENTO]: { label: 'Orçamento', variant: 'info' },
+  [StatusVenda.CANCELADA]: { label: 'Cancelada', variant: 'danger' },
+};
 
 const VendasTable: React.FC<VendasTableProps> = ({ 
   data, 
@@ -38,13 +47,8 @@ const VendasTable: React.FC<VendasTableProps> = ({
   }
 
   const getStatusBadge = (status: StatusVenda) => {
-    const labels: Record<string, string> = {
-       [StatusVenda.CONCLUIDA]: 'Concluída',
-       [StatusVenda.PENDENTE]: 'Pendente',
-       [StatusVenda.ORCAMENTO]: 'Orçamento',
-       [StatusVenda.CANCELADA]: 'Cancelada',
-    };
-    return <span className={`badge badge-${status.toLowerCase()}`}>{labels[status]}</span>;
+    const config = statusConfig[status];
+    return <StatusBadge variant={config.variant}>{config.label}</StatusBadge>;
   };
 
   const getPagamentosResumo = (pagamentos: { formaPagamento: string }[]) => {
@@ -56,7 +60,7 @@ const VendasTable: React.FC<VendasTableProps> = ({
 
   return (
     <div className="table-wrapper">
-      <table className="vendas-table">
+      <table className="data-table">
         <thead>
           <tr>
             <th>Nº Venda</th>
@@ -66,57 +70,63 @@ const VendasTable: React.FC<VendasTableProps> = ({
             <th>Total</th>
             <th>Pagamento</th>
             <th>Status</th>
-            <th className="text-right">Ações</th>
+            <th className="col-actions">Ações</th>
           </tr>
         </thead>
         <tbody>
           {data.map((venda) => (
             <tr key={venda.id}>
-              <td className="font-bold">#{venda.numero.toString().padStart(5, '0')}</td>
+              <td className="cell-bold">#{venda.numero.toString().padStart(5, '0')}</td>
               <td>{formatDate(venda.createdAt)}</td>
               <td>
-                <div className="cliente-info">
-                  <span className="cliente-nome">{venda.cliente?.nome || 'Consumidor Final'}</span>
-                  <span className="cliente-doc">{venda.cliente?.cpfCnpj || '--'}</span>
+                <div className="cell-stacked">
+                  <span className="cell-primary">{venda.cliente?.nome || 'Consumidor Final'}</span>
+                  <span className="cell-secondary">{venda.cliente?.cpfCnpj || '--'}</span>
                 </div>
               </td>
               <td>{venda.usuario?.nome}</td>
-              <td className="font-bold">{formatCurrency(Number(venda.total))}</td>
+              <td className="cell-bold">{formatCurrency(Number(venda.total))}</td>
               <td>{getPagamentosResumo(venda.pagamentos)}</td>
               <td>{getStatusBadge(venda.status)}</td>
-              <td className="text-right actions-cell">
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  icon={<Eye size={16} />} 
-                  onClick={() => onViewDetails(venda.id)}
-                  title="Ver Detalhes"
-                />
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  icon={<Printer size={16} />} 
-                  onClick={() => {}}
-                  title="Imprimir"
-                />
-                {venda.status !== StatusVenda.CANCELADA && (
-                  <>
-                    <Button 
-                      variant="secondary" 
-                      size="sm" 
-                      icon={<FileText size={16} />} 
-                      onClick={() => onGerarDocumentos(venda.id)}
-                      title="Gerar Contratos e Promissórias"
-                    />
-                    <Button 
-                      variant="danger" 
-                      size="sm" 
-                      icon={<Trash2 size={16} />} 
-                      onClick={() => onCancel(venda.id)}
-                      title="Cancelar Venda"
-                    />
-                  </>
-                )}
+              <td className="col-actions">
+                <ActionGroup>
+                  <IconButton 
+                    variant="default" 
+                    size="sm" 
+                    icon={<Eye size={16} />} 
+                    onClick={() => onViewDetails(venda.id)}
+                    title="Ver Detalhes"
+                    aria-label="Ver detalhes da venda"
+                  />
+                  <IconButton 
+                    variant="default" 
+                    size="sm" 
+                    icon={<Printer size={16} />} 
+                    onClick={() => {}}
+                    title="Imprimir"
+                    aria-label="Imprimir venda"
+                  />
+                  {venda.status !== StatusVenda.CANCELADA && (
+                    <>
+                      <IconButton 
+                        variant="default" 
+                        size="sm" 
+                        icon={<FileText size={16} />} 
+                        onClick={() => onGerarDocumentos(venda.id)}
+                        title="Gerar Contratos e Promissórias"
+                        aria-label="Gerar documentos"
+                      />
+                      <IconButton 
+                        variant="danger" 
+                        size="sm" 
+                        icon={<Trash2 size={16} />} 
+                        onClick={() => onCancel(venda.id)}
+                        title="Cancelar Venda"
+                        aria-label="Cancelar venda"
+                      />
+                    </>
+                  )}
+                </ActionGroup>
               </td>
             </tr>
           ))}
@@ -133,6 +143,7 @@ const VendasTable: React.FC<VendasTableProps> = ({
               disabled={meta.page === 1} 
               onClick={() => onPageChange(meta.page - 1)}
               className="pagination-btn"
+              aria-label="Página anterior"
             >
               <ChevronLeft size={18} />
             </button>
@@ -141,6 +152,7 @@ const VendasTable: React.FC<VendasTableProps> = ({
               disabled={meta.page >= meta.totalPages} 
               onClick={() => onPageChange(meta.page + 1)}
               className="pagination-btn"
+              aria-label="Próxima página"
             >
               <ChevronRight size={18} />
             </button>

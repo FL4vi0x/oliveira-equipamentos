@@ -16,13 +16,13 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "wait-on": "^7.2.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
-    "eslint": "^9.18.0",
     "prettier": "^3.4.2",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.2"
+    "wait-on": "^7.2.0"
   },
   "lint-staged": {
     "packages/backend/**/*.{ts,js}": [
@@ -33,6 +33,8 @@
     ]
   },
   "dependencies": {
-    "electron": "^28.3.3"
+    "electron": "^28.3.3",
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.3"
   }
 }
