@@ -1,6 +1,16 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import authService, { type User } from '../services/auth.service';
-import { isUiPreviewMode } from '../config/preview';
+
+// UI Preview Mode - permite bypass de autenticação para desenvolvimento visual
+const UI_PREVIEW_MODE = import.meta.env.VITE_UI_PREVIEW_MODE === 'true';
+
+// Usuário mock para Preview Mode
+const PREVIEW_USER: User = {
+    id: 'preview-user',
+    nome: 'Administrador Oliveira',
+    email: 'admin@oliveira.com',
+    role: 'admin',
+};
 
 interface AuthContextType {
     user: User | null;
@@ -13,15 +23,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(UI_PREVIEW_MODE ? PREVIEW_USER : null);
+    const [loading, setLoading] = useState(!UI_PREVIEW_MODE);
 
     useEffect(() => {
-        if (isUiPreviewMode()) {
-            import('../mocks/previewUser.mock').then((module) => {
-                setUser(module.mockUser);
-                setLoading(false);
-            });
+        // Em Preview Mode, já iniciamos autenticado
+        if (UI_PREVIEW_MODE) {
             return;
         }
 
@@ -38,7 +45,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = async (login: string, senha: string) => {
-        if (isUiPreviewMode()) return;
         try {
             const response = await authService.login(login, senha);
             authService.setToken(response.access_token);
@@ -51,7 +57,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const logout = () => {
-        if (isUiPreviewMode()) return;
         authService.logout();
         setUser(null);
     };

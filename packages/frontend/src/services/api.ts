@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { isUiPreviewMode } from '../config/preview';
 
 const isElectron = () => {
   return window && window.electronAPI;
@@ -103,61 +102,40 @@ export const api = {
   },
 
   async get<T>(endpoint: string, config?: { params?: Record<string, string | number | boolean | undefined> }): Promise<T> {
-    if (isUiPreviewMode()) {
-      const { handleMockRequest } = await import('../mocks/mockHandler');
-      const mockData = handleMockRequest('GET', endpoint);
-      if (mockData !== null) return mockData as T;
-    }
     if (isElectron()) return this.electronRequest<T>('GET', endpoint, undefined, config?.params);
     const response = await axiosClient.get<T>(endpoint, config);
     return response.data;
   },
 
   async post<T>(endpoint: string, data?: unknown, config?: import('axios').AxiosRequestConfig): Promise<T> {
-    if (isUiPreviewMode()) {
-      const { handleMockRequest } = await import('../mocks/mockHandler');
-      const mockData = handleMockRequest('POST', endpoint, data);
-      if (mockData !== null) return mockData as T;
-    }
     if (isElectron()) {
       const res = await this.electronRequest<unknown>('POST', endpoint, data);
+      // No Electron, se pedirmos blob, o main process devolve um Buffer (Uint8Array)
+      // Envelopamos em um objeto .data para compatibilidade com o código do modal
       if (config?.responseType === 'blob') {
         return { data: res } as unknown as T;
       }
       return res as T;
     }
     const response = await axiosClient.post<T>(endpoint, data, config);
+    // Para downloads (blob), precisamos do objeto completo para pegar headers ou o blob no .data
+    // Para o resto, retornamos apenas o .data
     return (config?.responseType ? response : response.data) as T;
   },
 
   async put<T>(endpoint: string, data?: unknown): Promise<T> {
-    if (isUiPreviewMode()) {
-      const { handleMockRequest } = await import('../mocks/mockHandler');
-      const mockData = handleMockRequest('PUT', endpoint, data);
-      if (mockData !== null) return mockData as T;
-    }
     if (isElectron()) return this.electronRequest<T>('PUT', endpoint, data);
     const response = await axiosClient.put<T>(endpoint, data);
     return response.data;
   },
 
   async patch<T>(endpoint: string, data?: unknown): Promise<T> {
-    if (isUiPreviewMode()) {
-      const { handleMockRequest } = await import('../mocks/mockHandler');
-      const mockData = handleMockRequest('PATCH', endpoint, data);
-      if (mockData !== null) return mockData as T;
-    }
     if (isElectron()) return this.electronRequest<T>('PATCH', endpoint, data);
     const response = await axiosClient.patch<T>(endpoint, data);
     return response.data;
   },
 
   async delete<T>(endpoint: string): Promise<T> {
-    if (isUiPreviewMode()) {
-      const { handleMockRequest } = await import('../mocks/mockHandler');
-      const mockData = handleMockRequest('DELETE', endpoint);
-      if (mockData !== null) return mockData as T;
-    }
     if (isElectron()) return this.electronRequest<T>('DELETE', endpoint);
     const response = await axiosClient.delete<T>(endpoint);
     return response.data;
