@@ -84,7 +84,7 @@ const VendasTable: React.FC<VendasTableProps> = ({
                   <span className="cell-secondary">{venda.cliente?.cpfCnpj || '--'}</span>
                 </div>
               </td>
-              <td>{venda.usuario?.nome}</td>
+              <td>{venda.operador?.nome || venda.usuario?.nome || '--'}</td>
               <td className="cell-bold">{formatCurrency(Number(venda.total))}</td>
               <td>{getPagamentosResumo(venda.pagamentos)}</td>
               <td>{getStatusBadge(venda.status)}</td>

@@ -16,6 +16,14 @@
   flex-shrink: 0;
 }
 
+/* SVG icons dentro do botão */
+.ui-icon-button svg {
+  width: 1em;
+  height: 1em;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
 /* Sizes - Largura e altura iguais */
 .icon-btn-size-sm {
   width: 32px;
