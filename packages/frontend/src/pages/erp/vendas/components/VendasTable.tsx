@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Trash2, ChevronLeft, ChevronRight, Printer } from 'lucide-react';
+import { Eye, Trash2, ChevronLeft, ChevronRight, Printer, FileText } from 'lucide-react';
 import { formatCurrency, formatDate } from '../../../../utils/format.ts';
 import { Button } from '../../../../components/ui/Button.tsx';
 import { type Venda, StatusVenda } from '../../../../../../shared/types/venda.types.ts';
@@ -17,6 +17,7 @@ interface VendasTableProps {
   onPageChange: (page: number) => void;
   onViewDetails: (id: string) => void;
   onCancel: (id: string) => void;
+  onGerarDocumentos: (id: string) => void;
 }
 
 const VendasTable: React.FC<VendasTableProps> = ({ 
@@ -25,7 +26,8 @@ const VendasTable: React.FC<VendasTableProps> = ({
   meta, 
   onPageChange,
   onViewDetails,
-  onCancel
+  onCancel,
+  onGerarDocumentos
 }) => {
   if (isLoading) {
     return <div className="table-loading">Carregando dados da venda...</div>;
@@ -98,13 +100,22 @@ const VendasTable: React.FC<VendasTableProps> = ({
                   title="Imprimir"
                 />
                 {venda.status !== StatusVenda.CANCELADA && (
-                  <Button 
-                    variant="danger" 
-                    size="sm" 
-                    icon={<Trash2 size={16} />} 
-                    onClick={() => onCancel(venda.id)}
-                    title="Cancelar Venda"
-                  />
+                  <>
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      icon={<FileText size={16} />} 
+                      onClick={() => onGerarDocumentos(venda.id)}
+                      title="Gerar Contratos e Promissórias"
+                    />
+                    <Button 
+                      variant="danger" 
+                      size="sm" 
+                      icon={<Trash2 size={16} />} 
+                      onClick={() => onCancel(venda.id)}
+                      title="Cancelar Venda"
+                    />
+                  </>
                 )}
               </td>
             </tr>

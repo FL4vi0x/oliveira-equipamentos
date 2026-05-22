@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"pnpm:dev:backend\" \"pnpm:dev:frontend\" \"pnpm:dev:electron\"",
+    "dev": "concurrently \"pnpm:dev:backend\" \"pnpm:dev:frontend\" \"pnpm:dev:electron\" \"pnpm:watch:electron\"",
     "dev:backend": "cd packages/backend && pnpm start:dev",
     "dev:frontend": "cd packages/frontend && pnpm dev",
     "dev:electron": "wait-on http://localhost:5173 && cd packages/electron && pnpm start",
+    "watch:electron": "cd packages/electron && pnpm watch",
     "build": "pnpm -r build",
     "prisma:migrate": "cd packages/backend && pnpm prisma migrate dev",
     "prisma:studio": "cd packages/backend && pnpm prisma studio",

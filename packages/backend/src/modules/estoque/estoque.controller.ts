@@ -25,7 +25,7 @@ export class EstoqueController {
   @Post('movimentar')
   @Roles('ADMIN', 'GERENTE', 'ESTOQUISTA')
   registrarMovimentacao(@Body() dto: CreateMovimentacaoDto, @Request() req) {
-    const usuarioId = req.user.sub; // Pegando o ID do usuário gerado pelo token JWT
+    const usuarioId = req.user.id; // Corrigido: JwtStrategy retorna 'id'
     return this.estoqueService.registrarMovimentacao(dto, usuarioId);
   }
 

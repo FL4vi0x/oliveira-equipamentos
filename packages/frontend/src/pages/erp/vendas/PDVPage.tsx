@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { Banknote, CreditCard, QrCode, CheckCircle2, Loader2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { Banknote, CreditCard, QrCode, CheckCircle2, Loader2, ScrollText, User, Search } from 'lucide-react';
 import { estoqueService } from '../../../services/estoque.service';
 import { vendasService } from '../../../services/vendas.service';
 import { useToast } from '../../../contexts/ToastContext';
@@ -12,6 +13,7 @@ import { ProductSearch } from './components/ProductSearch';
 import { SummaryPanel } from './components/SummaryPanel';
 import { ActionButtons } from './components/ActionButtons';
 import { type FormaPagamento, FormaPagamento as FPValue } from '../../../../../shared/types/venda.types';
+import { clientesService } from '../../../services/clientes.service';
 import './PDVPage.css';
 
 interface CaixaInfo {
@@ -21,6 +23,7 @@ interface CaixaInfo {
 
 export const PDVPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // ── Estado de Caixa ──────────────────────────────────────────
   const [localCaixa, setLocalCaixa] = useState<CaixaInfo | null>(null);
@@ -43,6 +46,9 @@ export const PDVPage = () => {
   // ── Modais ───────────────────────────────────────────────────
   const [showPayModal, setShowPayModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [selectedCliente, setSelectedCliente] = useState<{ id: string, nome: string, cpfCnpj: string } | null>(null);
+  const [clientSearch, setClientSearch] = useState('');
 
   // ── Query de Produtos ────────────────────────────────────────
   const { data: allProducts = [] } = useQuery({
@@ -59,6 +65,13 @@ export const PDVPage = () => {
         )
         .slice(0, 6)
     : [];
+
+  // ── Query de Clientes ───────────────────────────────────────
+  const { data: clientResults } = useQuery({
+    queryKey: ['clientes-pdv', clientSearch],
+    queryFn: () => clientesService.getAll({ search: clientSearch, limit: 5 }),
+    enabled: clientSearch.length > 2,
+  });
 
   // ── Lógica do Carrinho ───────────────────────────────────────
   const addToCart = useCallback((p: { id: string; nome: string; codigoInterno: string; precoVenda?: number | string; unidadeMedida: string }) => {
@@ -100,9 +113,10 @@ export const PDVPage = () => {
 
   const subtotal = cart.reduce((acc, item) => acc + item.precoVenda * item.quantidade, 0);
 
-  // ── Mutação: Finalizar Venda ─────────────────────────────────
+  const queryClient = useQueryClient();
   const { mutate: finalize, isPending } = useMutation({
     mutationFn: (forma: FormaPagamento) => vendasService.finalizarVenda({
+      clienteId: selectedCliente?.id,
       pagamentos: [{
         formaPagamento: forma,
         valor: subtotal,
@@ -114,10 +128,12 @@ export const PDVPage = () => {
       })),
     }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vendas'] });
       setShowPayModal(false);
       setShowSuccess(true);
       setCart([]);
       setSelectedId(null);
+      setSelectedCliente(null);
       toast('Venda concluída com sucesso!', 'success');
     },
     onError: (err: unknown) => {
@@ -149,13 +165,18 @@ export const PDVPage = () => {
         e.preventDefault();
         if (cart.length > 0) setShowPayModal(true);
       }
-      if (e.key === 'Escape' && showPayModal) {
-        setShowPayModal(false);
+      if (e.key === 'F1') {
+        e.preventDefault();
+        setShowClientModal(true);
+      }
+      if (e.key === 'Escape') {
+        if (showPayModal) setShowPayModal(false);
+        if (showClientModal) setShowClientModal(false);
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [cart.length, showPayModal]);
+  }, [cart.length, showPayModal, showClientModal]);
 
   // ── Loading ──────────────────────────────────────────────────
   if (loadingCaixa) {
@@ -169,7 +190,10 @@ export const PDVPage = () => {
 
   // ── Sem Caixa Aberto ────────────────────────────────────────
   if (!activeCaixa) {
-    return <AbrirCaixaModal onSuccess={(c) => setLocalCaixa(c as CaixaInfo)} />;
+    return <AbrirCaixaModal 
+             onSuccess={(c) => setLocalCaixa(c as CaixaInfo)} 
+             onClose={() => navigate(-1)} 
+           />;
   }
 
   // ── Tela Principal ───────────────────────────────────────────
@@ -178,8 +202,28 @@ export const PDVPage = () => {
       <PDVTopBar caixaId={activeCaixa?.id} />
 
       <div className="pdv-body">
-        {/* ESQUERDA: Carrinho */}
+        {/* ESQUERDA: Cliente + Carrinho */}
         <div className="pdv-left">
+          <div className="cliente-selection-bar">
+            {selectedCliente ? (
+              <div className="selected-cliente-info">
+                <div className="cliente-avatar">
+                  <User size={20} />
+                </div>
+                <div className="cliente-details">
+                  <span className="cliente-name">{selectedCliente.nome}</span>
+                  <span className="cliente-doc">{selectedCliente.cpfCnpj}</span>
+                </div>
+                <button className="btn-remove-cliente" onClick={() => setSelectedCliente(null)}>&times;</button>
+              </div>
+            ) : (
+              <button className="btn-identify-cliente" onClick={() => setShowClientModal(true)}>
+                <User size={18} />
+                <span>Identificar Cliente (F1)</span>
+              </button>
+            )}
+          </div>
+
           <CartList
             items={cart}
             selectedId={selectedId}
@@ -237,6 +281,10 @@ export const PDVPage = () => {
                 <QrCode size={36} className="pay-modal-icon pay-modal-icon--teal" />
                 <span>PIX</span>
               </button>
+              <button className="pay-modal-btn" onClick={() => finalize(FPValue.PROMISSORIA)} disabled={isPending}>
+                <ScrollText size={36} className="pay-modal-icon pay-modal-icon--blue" />
+                <span>Promissória</span>
+              </button>
               <button className="pay-modal-btn" disabled>
                 <span style={{ fontSize: '2rem' }}>···</span>
                 <span>Outros</span>
@@ -271,6 +319,64 @@ export const PDVPage = () => {
               >
                 Imprimir Recibo
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE BUSCA DE CLIENTE */}
+      {showClientModal && (
+        <div className="modal-overlay" onClick={() => setShowClientModal(false)}>
+          <div className="modal-content modal-sm" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="cf-modal-title">Identificar Cliente</h2>
+              <button onClick={() => setShowClientModal(false)} className="cf-btn-icon">&times;</button>
+            </div>
+            <div className="modal-body" style={{ padding: '1.5rem' }}>
+              <div className="cf-field">
+                <div style={{ position: 'relative' }}>
+                  <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                  <input
+                    type="text"
+                    className="cf-input"
+                    style={{ paddingLeft: '40px' }}
+                    placeholder="Buscar por nome ou CPF..."
+                    autoFocus
+                    value={clientSearch}
+                    onChange={(e) => setClientSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="client-results" style={{ marginTop: '1rem' }}>
+                {clientResults?.data && clientResults.data.length > 0 ? (
+                  clientResults.data.map(c => (
+                    <div 
+                      key={c.id} 
+                      className="client-result-item" 
+                      onClick={() => {
+                        setSelectedCliente({ id: c.id, nome: c.nome, cpfCnpj: c.cpfCnpj });
+                        setShowClientModal(false);
+                        setClientSearch('');
+                      }}
+                    >
+                      <User size={16} />
+                      <div className="result-info">
+                        <span className="result-name">{c.nome}</span>
+                        <span className="result-doc">{c.cpfCnpj}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : clientSearch.length > 2 ? (
+                  <div style={{ textAlign: 'center', padding: '1rem', color: '#64748b' }}>
+                    Nenhum cliente encontrado.
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '1rem', color: '#64748b' }}>
+                    Digite pelo menos 3 caracteres...
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

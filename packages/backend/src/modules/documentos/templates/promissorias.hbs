@@ -1,0 +1,318 @@
+{{!--
+  TEMPLATE: promissorias.hbs
+  Gera 3 promissórias por página A4, empilhadas verticalmente.
+  Cada promissória ocupa exatamente 1/3 da página (≈ 88mm de altura).
+  O helper {{#chunk parcelas 3}} agrupa as parcelas em folhas de 3,
+  e o {{#fillEmptySlots}} preenche com espaços em branco se a última folha tiver < 3.
+--}}
+
+<style>
+  /* ─── Reset de impressão ─────────────────────────────────────── */
+  @page { margin: 8mm 10mm; size: A4 portrait; }
+
+  .np-pagina {
+    width: 100%;
+    page-break-after: always;
+  }
+  .np-pagina:last-child {
+    page-break-after: avoid;
+  }
+
+  /* ─── Promissória individual ─────────────────────────────────── */
+  .np-nota {
+    display: flex;
+    width: 100%;
+    height: 88mm;
+    border: 1.5px solid #555;
+    margin-bottom: 3mm;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .np-nota:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ─── Faixa lateral esquerda ─────────────────────────────────── */
+  .np-lateral {
+    width: 22mm;
+    min-width: 22mm;
+    border-right: 1.5px solid #555;
+    position: relative;      /* children absolutamente posicionados */
+    background: #f7f7f5;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* ─── Logo horizontal rotacionada (preenche a lateral) ──────── */
+  .np-lateral-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* width = altura da promissória (~84mm) vira o comprimento visual */
+    /* height = largura da lateral (~18mm) vira a altura visual       */
+    width: 84mm;
+    height: 18mm;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    object-fit: contain;
+    opacity: 0.90;
+  }
+
+  /* ─── Símbolo OE pequeno (sobreposto) ───────────────────────── */
+  .np-lateral-simbolo {
+    position: absolute;
+    top: 4mm;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12mm;
+    height: 12mm;
+    object-fit: contain;
+    z-index: 2;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.75);
+    padding: 1px;
+  }
+
+  /* ─── Corpo principal ────────────────────────────────────────── */
+  .np-corpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 3mm 4mm 2mm 4mm;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* ─── Linha 1: Nº + Vencimento ───────────────────────────────── */
+  .np-linha-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 2mm;
+    margin-bottom: 1.5mm;
+  }
+
+  .np-num-label {
+    font-size: 7.5pt;
+    color: #444;
+  }
+  .np-num-valor {
+    font-size: 8pt;
+    font-weight: bold;
+    background: #e3e3e3;
+    padding: 0.5mm 3mm;
+    border-radius: 2px;
+  }
+
+  .np-venc-label {
+    font-size: 7.5pt;
+    color: #444;
+  }
+  .np-venc-valor {
+    font-size: 8pt;
+    font-weight: bold;
+    background: #e3e3e3;
+    padding: 0.5mm 3mm;
+    border-radius: 2px;
+  }
+
+  /* ─── Linha 2: R$ + Valor ────────────────────────────────────── */
+  .np-linha-valor {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 3mm;
+    margin-bottom: 2mm;
+  }
+
+  .np-rs-label {
+    font-size: 10pt;
+    font-weight: bold;
+  }
+  .np-rs-valor {
+    font-size: 14pt;
+    font-weight: bold;
+    background: #e3e3e3;
+    padding: 1mm 6mm;
+    border-radius: 3px;
+    min-width: 28mm;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── Texto legal ────────────────────────────────────────────── */
+  .np-texto-legal {
+    font-size: 7.5pt;
+    line-height: 1.45;
+    text-align: justify;
+    flex-shrink: 0;
+  }
+
+  /* ─── Destaque do valor por extenso ──────────────────────────── */
+  .np-extenso {
+    background: #e3e3e3;
+    padding: 1.5mm 2mm;
+    margin: 1.5mm 0;
+    font-weight: bold;
+    font-size: 8pt;
+    text-transform: capitalize;
+    border-radius: 2px;
+  }
+
+  .np-pagavel {
+    font-size: 7.5pt;
+    margin-bottom: 2mm;
+  }
+
+  /* ─── Bloco do emitente + assinatura ─────────────────────────── */
+  .np-rodape {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    padding-top: 1.5mm;
+    border-top: 1px solid #ddd;
+    gap: 4mm;
+  }
+
+  .np-emitente {
+    flex: 2;
+    font-size: 7pt;
+    line-height: 1.6;
+  }
+  .np-emitente strong {
+    font-size: 7.5pt;
+  }
+
+  .np-assinatura {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    min-width: 38mm;
+  }
+  .np-data-emissao {
+    font-size: 7pt;
+    text-align: right;
+    margin-bottom: 5mm;
+    color: #333;
+  }
+  .np-linha-assinatura {
+    width: 100%;
+    border-top: 1px solid #444;
+    margin-top: 1mm;
+  }
+  .np-label-assinatura {
+    font-size: 6.5pt;
+    text-align: center;
+    color: #555;
+    margin-top: 0.5mm;
+    width: 100%;
+  }
+
+  /* ─── Rodapé discreto ────────────────────────────────────────── */
+  .np-footer {
+    font-size: 5.5pt;
+    color: #aaa;
+    text-align: right;
+    margin-top: 0.5mm;
+  }
+
+  /* ─── Nota vazia (filler) ────────────────────────────────────── */
+  .np-nota-vazia {
+    height: 88mm;
+    border: 1px dashed #ddd;
+    margin-bottom: 3mm;
+    box-sizing: border-box;
+  }
+</style>
+
+{{! ── Loop principal: 3 promissórias por página ─────────────────── }}
+{{#chunk parcelas 3}}
+<div class="np-pagina">
+  {{#each this}}
+  <div class="np-nota">
+
+    {{! ── Faixa lateral esquerda ────────────────────────────── }}
+    <div class="np-lateral">
+      {{! Logo horizontal rotacionada — preenche a faixa verticalmente }}
+      {{#if ../../logos.horizontal}}
+      <img src="{{../../logos.horizontal}}" class="np-lateral-logo" alt="Oliveira Equipamentos" />
+      {{/if}}
+      {{! Símbolo OE — pequeno, discreto, acima da logo }}
+      {{#if ../../logos.simbolo}}
+      <img src="{{../../logos.simbolo}}" class="np-lateral-simbolo" alt="" />
+      {{/if}}
+    </div>
+
+    {{! ── Corpo ───────────────────────────────────────────────────── }}
+    <div class="np-corpo">
+
+      {{! Linha 1: Nº e Vencimento }}
+      <div class="np-linha-topo">
+        <div>
+          <span class="np-num-label">Nº&nbsp;</span>
+          <span class="np-num-valor">{{numero}} de {{totalParcelas}}</span>
+        </div>
+        <div>
+          <span class="np-venc-label">Vencimento:&nbsp;</span>
+          <span class="np-venc-valor">{{formatDateExtenso vencimento}}</span>
+        </div>
+      </div>
+
+      {{! Linha 2: R$ + Valor }}
+      <div class="np-linha-valor">
+        <span class="np-rs-label">R$:</span>
+        <span class="np-rs-valor">{{formatCurrency2 valor}}</span>
+      </div>
+
+      {{! Texto legal }}
+      <div class="np-texto-legal">
+        {{formatDateExtensoAos vencimento}}, pagarei por esta única via de NOTA PROMISSÓRIA à
+        <strong>{{../empresa.nome}}</strong> - CPF/CNPJ: {{../empresa.cnpj}}
+        ou à sua ordem a quantia de:
+      </div>
+
+      {{! Valor por extenso }}
+      <div class="np-extenso">{{valorPorExtenso}}</div>
+
+      {{! em moeda corrente + pagável em }}
+      <div class="np-pagavel">
+        em moeda corrente nacional.<br/>
+        Pagável em: <strong>{{../localPagamento}}</strong>
+      </div>
+
+      {{! Rodapé: emitente + assinatura }}
+      <div class="np-rodape">
+        <div class="np-emitente">
+          Emitente: <strong>{{../cliente.nome}}</strong><br/>
+          CPF/CNPJ: {{../cliente.cpfCnpj}}<br/>
+          Endereço: {{../cliente.endereco}}{{#if ../cliente.numero}}, {{../cliente.numero}}{{/if}}{{#if ../cliente.bairro}}, {{../cliente.bairro}}{{/if}}<br/>
+          Cidade/UF: {{../cliente.cidade}} - {{../cliente.estado}}<br/>
+          CEP: {{../cliente.cep}}
+        </div>
+        <div class="np-assinatura">
+          <div class="np-data-emissao">
+            {{../empresa.cidade}} - {{../empresa.estado}}, {{formatDateExtenso ../geradoEm}}
+          </div>
+          <div class="np-linha-assinatura"></div>
+          <div class="np-label-assinatura">Assinatura</div>
+        </div>
+      </div>
+
+      <div class="np-footer">Acesse: www.oliveiraequipamentos.com.br</div>
+
+    </div>{{! /np-corpo }}
+  </div>{{! /np-nota }}
+  {{/each}}
+
+  {{! Preenche com slots vazios se a última folha tiver < 3 promissórias }}
+  {{#fillEmptySlots this 3}}
+  <div class="np-nota-vazia"></div>
+  {{/fillEmptySlots}}
+
+</div>{{! /np-pagina }}
+{{/chunk}}

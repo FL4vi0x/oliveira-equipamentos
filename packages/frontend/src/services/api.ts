@@ -4,10 +4,10 @@ const isElectron = () => {
   return window && window.electronAPI;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3001/api';
 
 // Cliente Axios para uso web
-const axiosClient = axios.create({
+export const axiosClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -85,7 +85,9 @@ export const api = {
         token: getToken() || undefined,
       });
     } catch (error: unknown) {
-      if (error instanceof Error && error.message?.includes('status: 401')) {
+      const err = error as Error & { message?: string };
+      if (err.message?.includes('status: 401')) {
+        // Redireciona de forma silenciosa para o axiosClient para renovar o token via web interceptors
         return axiosClient.request<T>({ 
           method, 
           url: endpoint, 
@@ -93,6 +95,8 @@ export const api = {
           params 
         }).then(res => res.data);
       }
+      
+      console.error('[API Electron Error Details]:', error);
       throw error;
     }
   },
@@ -103,10 +107,20 @@ export const api = {
     return response.data;
   },
 
-  async post<T>(endpoint: string, data?: unknown): Promise<T> {
-    if (isElectron()) return this.electronRequest<T>('POST', endpoint, data);
-    const response = await axiosClient.post<T>(endpoint, data);
-    return response.data;
+  async post<T>(endpoint: string, data?: unknown, config?: import('axios').AxiosRequestConfig): Promise<T> {
+    if (isElectron()) {
+      const res = await this.electronRequest<unknown>('POST', endpoint, data);
+      // No Electron, se pedirmos blob, o main process devolve um Buffer (Uint8Array)
+      // Envelopamos em um objeto .data para compatibilidade com o código do modal
+      if (config?.responseType === 'blob') {
+        return { data: res } as unknown as T;
+      }
+      return res as T;
+    }
+    const response = await axiosClient.post<T>(endpoint, data, config);
+    // Para downloads (blob), precisamos do objeto completo para pegar headers ou o blob no .data
+    // Para o resto, retornamos apenas o .data
+    return (config?.responseType ? response : response.data) as T;
   },
 
   async put<T>(endpoint: string, data?: unknown): Promise<T> {

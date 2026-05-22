@@ -1,0 +1,71 @@
+<div class="page">
+  <!-- CABEÇALHO COM LOGO -->
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #1a1a1a; padding-bottom:8px; margin-bottom:10px;">
+    <div style="flex:2;">
+      {{#if logos.horizontal}}
+      <img src="{{logos.horizontal}}" alt="Oliveira Equipamentos" style="height:64px; max-width:260px; object-fit:contain; display:block;" />
+      {{/if}}
+      <div style="font-size:8pt; margin-top:4px; color:#444;">
+        {{empresa.endereco}}, {{empresa.numero}} — {{empresa.bairro}}<br/>
+        CEP: {{empresa.cep}} — {{empresa.cidade}}/{{empresa.estado}}<br/>
+        CNPJ: {{empresa.cnpj}} | Tel: {{empresa.telefone}}
+      </div>
+    </div>
+    <div style="flex:1; text-align:right;">
+      <h1 style="font-size:16pt; margin:0;">CONTRATO</h1>
+      <h2 style="font-size:14pt; margin:0;">{{venda.numero}}</h2>
+      <p style="font-size:12pt; font-weight:bold; margin:5px 0;">Pagamento</p>
+    </div>
+  </div>
+
+  <!-- INFO CLIENTE -->
+  <div style="background: #f3f4f6; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 9pt; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+    <div><strong>Cliente:</strong> {{cliente.nome}}</div>
+    <div style="text-align: right;"><strong>Data:</strong> {{formatDate venda.dataVenda}}</div>
+    <div><strong>Endereço:</strong> {{cliente.endereco}}, {{cliente.numero}}</div>
+    <div style="text-align: right;"><strong>CPF/CNPJ:</strong> {{cliente.cpfCnpj}}</div>
+    <div><strong>Bairro:</strong> {{cliente.bairro}}</div>
+    <div style="text-align: right;"><strong>Cidade:</strong> {{cliente.cidade}}/{{cliente.estado}}</div>
+  </div>
+
+  <!-- RESUMO FINANCEIRO -->
+  <div style="margin-bottom: 15px; border: 1px solid #000; font-size: 9pt;">
+    <div style="display: flex; justify-content: space-between; padding: 5px; border-bottom: 1px solid #eee;">
+      <span>Valor dos Produtos:</span>
+      <span>{{formatCurrency venda.total}}</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; padding: 5px; border-bottom: 1px solid #eee;">
+      <span>Valor do Frete:</span>
+      <span>R$ 0,00</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; padding: 5px; font-weight: bold; background: #eee;">
+      <span>Total do Pedido/Nota:</span>
+      <span>{{formatCurrency venda.total}}</span>
+    </div>
+  </div>
+
+  <div style="font-size: 8pt; color: #444; margin-bottom: 10px;">
+    <strong>Forma de Pagamento:</strong>
+  </div>
+
+  <!-- LISTA DE PARCELAS -->
+  <div style="font-size: 9pt; line-height: 1.4;">
+    {{#each parcelas}}
+    <div style="margin-bottom: 2px;">
+      Recebimento em Carteira: <strong>{{formatCurrency valor}}</strong> para <strong>{{formatDate vencimento}}</strong>
+    </div>
+    {{/each}}
+  </div>
+
+  <!-- ASSINATURAS -->
+  <div style="margin-top: 40mm; display: flex; justify-content: space-around; page-break-inside: avoid;">
+    <div style="text-align: center; width: 45%;">
+      <div style="border-top: 1px solid #000; padding-top: 5px;"></div>
+      <p style="font-size: 9pt; font-weight: bold; margin: 0;">{{empresa.nome}}</p>
+    </div>
+    <div style="text-align: center; width: 45%;">
+      <div style="border-top: 1px solid #000; padding-top: 5px;"></div>
+      <p style="font-size: 9pt; font-weight: bold; margin: 0;">{{cliente.nome}}</p>
+    </div>
+  </div>
+</div>

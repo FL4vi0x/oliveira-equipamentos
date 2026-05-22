@@ -1,0 +1,104 @@
+<div class="page">
+  <!-- CABEÇALHO DA EMPRESA COM LOGO -->
+  <div class="empresa-header" style="display:flex; align-items:center; gap:14px; border-bottom:2px solid #1a1a1a; padding-bottom:10px; margin-bottom:12px;">
+    {{#if logos.completa}}
+    <img src="{{logos.completa}}" alt="Oliveira Equipamentos" style="height:100px; max-width:260px; object-fit:contain; flex-shrink:0;" />
+    {{/if}}
+    <div style="flex:1; text-align:right;">
+      <div style="font-size:9pt; color:#444; line-height:1.5;">
+        CNPJ: {{empresa.cnpj}} | Tel: {{empresa.telefone}}<br/>
+        {{empresa.endereco}}, {{empresa.numero}} — {{empresa.cidade}}/{{empresa.estado}}
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin: 10px 0;">
+    <h1 style="font-size: 13pt; text-transform: uppercase; margin: 0; font-weight: bold;">
+      CONTRATO DE COMPRA E VENDA DE EQUIPAMENTOS COM RESERVA DE DOMÍNIO
+    </h1>
+    <p style="font-size: 10pt; font-weight: bold; margin-top: 5px;">Nº {{venda.numero}}</p>
+  </div>
+
+  <div class="texto-juridico" style="font-size: 8.5pt; line-height: 1.3;">
+    <p>
+      1. A empresa vendedora aliena, neste ato, ao comprador(a) o(s) objeto(s) descrito(s) no contrato de produtos de nº <strong>{{venda.numero}}</strong>, livre(s) e desembaraçado(s) de quaisquer ônus ou dívidas, conforme características e configurações constantes no presente contrato de compra e venda.
+    </p>
+    <p>
+      2. A referida compra e venda é feita pelo preço total de <strong>{{formatCurrency venda.total}}</strong> ({{valorPorExtenso}}), a ser pago conforme forma de pagamento e demais condições constantes no quadro de resumo em anexo, já inclusos os tributos, custos de transporte e seguro em caso de incidentes na operação de transporte até o local de destino do objeto indicado pelo comprador.
+    </p>
+    <p>
+      3. As partes estipulam a cláusula de venda com reserva de domínio, no qual o comprador recebe pela tradição a coisa e ingressa no plano de uso e gozo do bem, em sua posse, ficando subordinada a aquisição da propriedade ao pagamento integral do preço, com fulcro no artigo 521 do código civil brasileiro.
+    </p>
+    <p>
+      4. No caso de inadimplemento de qualquer parcela, constituirá em mora o comprador / devedor e os respectivos fiadores, bem como importará na aplicação de multa de 2% (dois por cento) sobre o total do valor inadimplido, com atualização monetária e juros de mora de 1% (um por cento) semanalmente.
+    </p>
+    <p>
+      5. O não pagamento de 03 (três) parcelas consecutivas ensejará o vencimento antecipado de todas as parcelas do contrato, facultando à vendedora promover, independentemente de interpelação judicial ou extrajudicial, protesto em cartório e registro nos cadastros de inadimplentes, além de facultar a execução da cláusula de reserva de domínio através de sequestro do bem em caráter cautelar, conjuntamente com a ação de execução por quantia certa originada deste título de crédito extrajudicial contra o comprador e fiadores, nos termos do artigo 525 do código civil e artigo 824 e seguintes do código de Processo Civil. Parágrafo Único — Caso seja necessária a interpelação judicial, a parte compradora aceita desde já a incidência de honorários advocatícios no percentual de 15% (quinze por cento) sobre o valor da execução.
+    </p>
+    <p>
+      6. Comprometem-se o(s) fiador(es) a também se responsabilizarem pelo pagamento do débito, solidariamente responsáveis pelo cumprimento das obrigações pecuniárias assumidas e tudo mais aqui estabelecido, inclusive em caso de vencimento antecipado das obrigações, com renúncia expressa aos benefícios, inclusive de ordem, tratados nos artigos 827 e seguintes do código civil de 2002, compreendendo a dívida ao principal, acrescido dos acessórios, multas e juros, inclusive despesas judiciais.
+    </p>
+    <p>
+      7. O(s) equipamento(s) do presente contrato de compra e venda com reserva de domínio, terão garantia de fábrica para equipamentos novos que, todavia, perderá a sua validade na hipótese de uso indevido, tais como: utilização de voltagem incorreta, danificação por impacto, obstrução por insetos no interior e nas engrenagens do equipamento, má instalação, alteração ou tentativa de reparação por técnico não autorizado, ou qualquer outro defeito relativo ao inadequado manuseio do utensílio, podendo se caracterizar como fora da garantia.
+    </p>
+    <p>
+      8. O comprador expressamente consente o tratamento de dados oferecido pelo vendedor, permitindo o armazenamento de seus dados pessoais como nome, identidade, CPF, e-mail, telefone, endereço e cartão de crédito/débito, além de autorizar consulta a órgãos de proteção de crédito com a finalidade de qualificar e proteger contra fraudes as partes deste contrato.
+    </p>
+    <p>
+      9. Os dados obtidos em razão deste contrato serão armazenados em um banco de dados seguro e sigiloso, com registros das transações realizadas e transparência na indetificação do comprador/fiador, tudo estabelecido como forma de garantir a proteção dos dados tratados, bem como, o comprador / fiador poderá a qualquer tempo modificar / alterar dados que estejam incompletos, inexatos ou desatualizados ou excluir dados desnecessários, excessivos ou tratados em desconformidade com o disposto na Lei nº 13.709, de 2018, mediante contato direto com a nossa central de tratamento de dados.
+    </p>
+    <p>
+      10. As partes autorizam o registro do presente contrato no cartório de Registro de Títulos e Documentos, de acordo com a Lei nº 6.015/73, bem como elegem o Foro da Comarca de {{empresa.cidade}}/{{empresa.estado}} para dirimir quaisquer questões oriundas deste contrato.
+    </p>
+  </div>
+
+  <div style="text-align: right; margin-top: 10px; font-size: 9pt;">
+    {{empresa.cidade}}, {{formatDate geradoEm}}
+  </div>
+
+  <!-- BLOCO DE ASSINATURAS COMPACTO -->
+  <div style="margin-top: 15px; page-break-inside: avoid;">
+    <div style="display: flex; justify-content: space-between; gap: 40px;">
+      <div style="flex: 1; text-align: left;">
+        <p style="font-size: 8pt; margin-bottom: 25px;">VENDEDOR(A):</p>
+        <div style="border-top: 1px solid #000;"></div>
+        <p style="font-size: 8pt; font-weight: bold; margin-top: 2px;">{{empresa.nome}}</p>
+        <p style="font-size: 7pt; color: #444;">CNPJ: {{empresa.cnpj}}</p>
+      </div>
+      <div style="flex: 1; text-align: left;">
+        <p style="font-size: 8pt; margin-bottom: 25px;">COMPRADOR(A):</p>
+        <div style="border-top: 1px solid #000;"></div>
+        <p style="font-size: 8pt; font-weight: bold; margin-top: 2px;">{{cliente.nome}}</p>
+        <p style="font-size: 7pt; color: #444;">CPF/CNPJ: {{cliente.cpfCnpj}}</p>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 40px; margin-top: 20px;">
+      <div style="flex: 1; text-align: left;">
+        <p style="font-size: 8pt; margin-bottom: 5px;">TESTEMUNHAS:</p>
+        <div style="margin-bottom: 15px;">
+          <div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+          <p style="font-size: 7pt; margin-top: 2px;">Nome: ___________________________________</p>
+          <p style="font-size: 7pt;">CPF: ____________________________________</p>
+        </div>
+        <div>
+          <div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+          <p style="font-size: 7pt; margin-top: 2px;">Nome: ___________________________________</p>
+          <p style="font-size: 7pt;">CPF: ____________________________________</p>
+        </div>
+      </div>
+      <div style="flex: 1; text-align: left;">
+        <p style="font-size: 8pt; margin-bottom: 5px;">FIADOR(ES):</p>
+        <div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+        <p style="font-size: 7pt; margin-top: 2px;">Nome: ___________________________________</p>
+        <p style="font-size: 7pt;">CPF: ____________________________________</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="doc-footer" style="font-size: 7pt; border-top: 1px solid #eee; margin-top: 10px;">
+    <span>{{empresa.nome}} — Contrato de Venda Nº {{venda.numero}}</span>
+    <span>Página 1 de 1</span>
+  </div>
+</div>

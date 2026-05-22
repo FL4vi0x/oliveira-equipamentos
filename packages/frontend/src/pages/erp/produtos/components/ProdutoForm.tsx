@@ -38,7 +38,7 @@ export const ProdutoForm: React.FC<Props> = ({ produtoId, initialData, onSuccess
 
   const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(schema) as any,
+    resolver: zodResolver(schema as any) as any,
     defaultValues: initialData || {
       unidadeMedida: 'UN',
       precoCompra: 0,

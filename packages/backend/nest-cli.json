@@ -3,6 +3,18 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "assets": [
+      {
+        "include": "modules/documentos/templates/**/*",
+        "outDir": "dist/src",
+        "watchAssets": true
+      },
+      {
+        "include": "modules/documentos/templates/assets/*.png",
+        "outDir": "dist/src",
+        "watchAssets": true
+      }
+    ]
   }
 }
