@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import authService, { type User } from '../services/auth.service';
+import { isUiPreviewMode } from '../config/preview';
 
 interface AuthContextType {
     user: User | null;
@@ -16,6 +17,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (isUiPreviewMode()) {
+            import('../mocks/previewUser.mock').then((module) => {
+                setUser(module.mockUser);
+                setLoading(false);
+            });
+            return;
+        }
+
         const loadUser = () => {
             const storedUser = authService.getUser();
             const token = authService.getToken();
@@ -29,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = async (login: string, senha: string) => {
+        if (isUiPreviewMode()) return;
         try {
             const response = await authService.login(login, senha);
             authService.setToken(response.access_token);
@@ -41,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const logout = () => {
+        if (isUiPreviewMode()) return;
         authService.logout();
         setUser(null);
     };
