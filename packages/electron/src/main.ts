@@ -59,7 +59,7 @@ ipcMain.handle('get-app-version', async () => {
 });
 
 ipcMain.handle('api-request', async (_event, { method, endpoint, data, token }) => {
-  const baseURL = process.env.VITE_API_URL || 'http://localhost:3001/api';
+  const baseURL = process.env.VITE_API_URL || 'http://127.0.0.1:3001/api';
 
   try {
     const response = await fetch(`${baseURL}${endpoint}`, {
@@ -75,11 +75,31 @@ ipcMain.handle('api-request', async (_event, { method, endpoint, data, token }) 
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
-  } catch (error: any) {
-    if (!error.message?.includes('status: 401')) {
-      console.error('API request failed:', error);
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    } else {
+      // Para PDFs e outros binários, retornamos como ArrayBuffer que o Electron converte para Buffer no IPC
+      const arrayBuffer = await response.arrayBuffer();
+      return Buffer.from(arrayBuffer);
     }
+  } catch (error: any) {
+    const isHttpError = error.message?.includes('HTTP error!');
+    const isUnauthorized = error.message?.includes('status: 401');
+    const isNotFound = error.message?.includes('status: 404');
+    
+    // Evita poluir o log do terminal com erros comuns que o frontend já sabe tratar (como 401 para refresh token)
+    if (!isUnauthorized && !isNotFound) {
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        cause: error.cause,
+        url: `${baseURL}${endpoint}`,
+        method
+      };
+      console.error(' [ELECTRON API ERROR] ', JSON.stringify(errorDetails, null, 2));
+    }
+    
     throw error;
   }
 });

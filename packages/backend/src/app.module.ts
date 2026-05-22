@@ -13,6 +13,7 @@ import { EstoqueModule } from './modules/estoque/estoque.module';
 import { CaixaModule } from './modules/caixa/caixa.module';
 import { VendasModule } from './modules/vendas/vendas.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { DocumentosModule } from './modules/documentos/documentos.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate } from './config/env.validation';
@@ -40,6 +41,7 @@ import { validate } from './config/env.validation';
     CaixaModule,
     VendasModule,
     DashboardModule,
+    DocumentosModule,
   ],
   controllers: [AppController],
   providers: [

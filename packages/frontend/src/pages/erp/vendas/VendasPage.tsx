@@ -8,6 +8,7 @@ import VendasFilters from './components/VendasFilters';
 import VendasSummaryCards from './components/VendasSummaryCards';
 import VendaDetailsModal from './components/VendaDetailsModal';
 import VendaCancelModal from './components/VendaCancelModal';
+import { GerarDocumentosModal } from './components/GerarDocumentosModal';
 import type { Venda } from '../../../../../shared/types/venda.types';
 import type { FilterVendaParams } from '../../../services/vendas.service';
 import './VendasPage.css';
@@ -40,10 +41,11 @@ const VendasPage: React.FC = () => {
 
   const [selectedVendaId, setSelectedVendaId] = useState<string | null>(null);
   const [vendaToCancelId, setVendaToCancelId] = useState<string | null>(null);
+  const [vendaToGenerateDocId, setVendaToGenerateDocId] = useState<string | null>(null);
 
   const { data, isLoading, refetch } = useQuery<VendasResponse>({
     queryKey: ['vendas', filters],
-    queryFn: () => vendasService.getAll(filters).then((res) => (res as { data: VendasResponse }).data),
+    queryFn: () => vendasService.getAll(filters) as Promise<VendasResponse>,
   });
 
   const handleFilterChange = (newFilters: Partial<FilterVendaParams>) => {
@@ -77,6 +79,7 @@ const VendasPage: React.FC = () => {
             onPageChange={(page: number) => setFilters((prev) => ({ ...prev, page }))}
             onViewDetails={(id: string) => setSelectedVendaId(id)}
             onCancel={(id: string) => setVendaToCancelId(id)}
+            onGerarDocumentos={(id: string) => setVendaToGenerateDocId(id)}
           />
         </div>
       </section>
@@ -96,6 +99,13 @@ const VendasPage: React.FC = () => {
             setVendaToCancelId(null);
             refetch();
           }}
+        />
+      )}
+
+      {vendaToGenerateDocId && (
+        <GerarDocumentosModal 
+          vendaId={vendaToGenerateDocId} 
+          onClose={() => setVendaToGenerateDocId(null)} 
         />
       )}
     </div>

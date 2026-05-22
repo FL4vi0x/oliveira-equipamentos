@@ -6,9 +6,10 @@ import { useToast } from '../../../../contexts/ToastContext';
 
 interface Props {
   onSuccess: (caixa: unknown) => void;
+  onClose?: () => void;
 }
 
-export const AbrirCaixaModal = ({ onSuccess }: Props) => {
+export const AbrirCaixaModal = ({ onSuccess, onClose }: Props) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [saldo, setSaldo] = useState<string>('0');
@@ -42,6 +43,11 @@ export const AbrirCaixaModal = ({ onSuccess }: Props) => {
             </h2>
             <p className="cf-modal-desc">Informe o saldo inicial para começar o dia.</p>
           </div>
+          {onClose && (
+            <button onClick={onClose} className="cf-btn-icon" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#64748b' }}>
+              &times;
+            </button>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="cliente-form" style={{ padding: '1.5rem' }}>

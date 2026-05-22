@@ -143,6 +143,7 @@ model Venda {
   usuario         Usuario        @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
   itens           ItemVenda[]
   pagamentos      PagamentoVenda[]
+  parcelas        ParcelaVenda[]
   caixaId         String?        @map("caixa_id")
   caixa           CaixaRegistro? @relation(fields: [caixaId], references: [id], onDelete: Restrict)
 
@@ -174,6 +175,7 @@ enum FormaPagamento {
   BOLETO
   TRANSFERENCIA
   CHEQUE
+  PROMISSORIA
   OUTROS
 }
 
@@ -381,4 +383,47 @@ enum StatusConta {
   PENDENTE
   PAGO
   CANCELADO
+}
+
+//
+// ==================== PARCELAS SEMANAIS ====================
+//
+model ParcelaVenda {
+  id              String      @id @default(uuid())
+  vendaId         String      @map("venda_id")
+  numero          Int         // número da parcela, ex: 1
+  totalParcelas   Int         @map("total_parcelas") // total de parcelas, ex: 30
+  valor           Decimal     @db.Decimal(10, 2)
+  vencimento      DateTime
+  status          StatusConta @default(PENDENTE)
+  dataPagamento   DateTime?   @map("data_pagamento")
+
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  venda           Venda       @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  @@map("parcelas_venda")
+}
+
+//
+// ==================== EMPRESA ====================
+//
+model Empresa {
+  id        String   @id @default(uuid())
+  nome      String
+  cnpj      String   @unique
+  telefone  String?
+  endereco  String?
+  numero    String?
+  bairro    String?
+  cidade    String?
+  estado    String?  @db.Char(2)
+  cep       String?
+  email     String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("empresa")
 }

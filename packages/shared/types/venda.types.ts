@@ -14,6 +14,7 @@ export const FormaPagamento = {
   BOLETO: 'BOLETO',
   TRANSFERENCIA: 'TRANSFERENCIA',
   CHEQUE: 'CHEQUE',
+  PROMISSORIA: 'PROMISSORIA',
   OUTROS: 'OUTROS',
 } as const;
 export type FormaPagamento = typeof FormaPagamento[keyof typeof FormaPagamento];

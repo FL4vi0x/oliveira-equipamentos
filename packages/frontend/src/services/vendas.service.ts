@@ -36,15 +36,15 @@ export interface FilterVendaParams {
 export const vendasService = {
   // --- CAIXA ---
   getCaixaAtivo: async () => {
-    return api.get('/caixa/ativo');
+    return api.get('/estoque/caixas/ativo');
   },
 
   abrirCaixa: async (saldoAbertura: number) => {
-    return api.post('/caixa/abrir', { saldoAbertura });
+    return api.post('/estoque/caixas/abrir', { saldoAbertura });
   },
 
   fecharCaixa: async (caixaId: string) => {
-    return api.patch(`/caixa/${caixaId}/fechar`);
+    return api.patch(`/estoque/caixas/${caixaId}/fechar`);
   },
 
   // --- VENDAS ---
@@ -66,5 +66,9 @@ export const vendasService = {
 
   cancelar: async (id: string) => {
     return api.patch(`/vendas/${id}/cancelar`);
+  },
+
+  gerarDocumentos: async (vendaId: string, params: { numeroParcelas: number; valorEntrada?: number; dataInicio?: string }) => {
+    return api.post<{ data: BlobPart }>(`/documentos/gerar/${vendaId}`, params, { responseType: 'blob' });
   },
 };

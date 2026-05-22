@@ -159,6 +159,7 @@ export class EstoqueService {
         estoqueAtual: true,
         estoqueMinimo: true,
         estoqueMaximo: true,
+        precoVenda: true,
       },
     });
 
@@ -175,6 +176,7 @@ export class EstoqueService {
         estoqueAtual: atual,
         estoqueMinimo: min,
         estoqueMaximo: p.estoqueMaximo ? Number(p.estoqueMaximo) : null,
+        precoVenda: Number(p.precoVenda),
       };
     });
   }
