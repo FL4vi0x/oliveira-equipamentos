@@ -1,8 +1,8 @@
 .vendas-page {
-  padding: 2rem;
+  padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--space-8);
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -15,64 +15,53 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }
 
 .header-info h1 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--color-slate-900);
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin-bottom: var(--space-2);
 }
 
 .header-info p {
-  color: var(--color-slate-500);
-  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .vendas-content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-6);
 }
 
 .table-card {
-  background: var(--color-white);
+  background: var(--bg-surface);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-slate-200);
+  border: 1px solid var(--border-default);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* Subcomponents common styles */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.625rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
+/* Filtros não precisam de fundo ou borda própria - herdam do card */
+.table-card .vendas-filters {
+  background: transparent;
+  border-bottom: 1px solid var(--border-default);
 }
 
-.badge-concluida {
-  background: #ecfdf5;
-  color: #059669;
-}
-
-.badge-pendente {
-  background: #fffbeb;
-  color: #d97706;
-}
-
-.badge-cancelada {
-  background: #fef2f2;
-  color: #dc2626;
-}
-
-.badge-orcamento {
-  background: #eff6ff;
-  color: #2563eb;
+/* Responsividade */
+@media (max-width: 768px) {
+  .vendas-page {
+    padding: var(--space-4);
+    gap: var(--space-6);
+  }
+  
+  .vendas-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
