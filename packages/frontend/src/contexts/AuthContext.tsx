@@ -1,17 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import authService, { type User } from '../services/auth.service';
 
-// UI Preview Mode - permite bypass de autenticação para desenvolvimento visual
-const UI_PREVIEW_MODE = import.meta.env.VITE_UI_PREVIEW_MODE === 'true';
-
-// Usuário mock para Preview Mode
-const PREVIEW_USER: User = {
-    id: 'preview-user',
-    nome: 'Administrador Oliveira',
-    email: 'admin@oliveira.com',
-    role: 'admin',
-};
-
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
@@ -23,15 +12,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(UI_PREVIEW_MODE ? PREVIEW_USER : null);
-    const [loading, setLoading] = useState(!UI_PREVIEW_MODE);
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Em Preview Mode, já iniciamos autenticado
-        if (UI_PREVIEW_MODE) {
-            return;
-        }
-
         const loadUser = () => {
             const storedUser = authService.getUser();
             const token = authService.getToken();
